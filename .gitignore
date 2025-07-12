@@ -1,0 +1,26 @@
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# Model folder
+model/
+
+# Next.js
+.next/
+out/
+
+# Node.js
+node_modules/
+.pnp
+.pnp.js
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
