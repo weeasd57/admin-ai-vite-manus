@@ -3,10 +3,15 @@ import { Button } from '../components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
 import { Badge } from '../components/ui/badge';
 import { Plus, Package, Edit, Trash2, Eye } from 'lucide-react';
+import { useRouter } from 'next/navigation';
+import { toast } from 'sonner';
+import { useSupabase } from '../hooks/useSupabase';
 import { useSupabase } from '../hooks/useSupabase';
 import { AddProductModal } from '../components/AddProductModal';
 
 export function Products() {
+  const router = useRouter();
+  const { deleteProduct } = useSupabase();
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showAddModal, setShowAddModal] = useState(false);
@@ -149,15 +154,40 @@ export function Products() {
                 </div>
 
                 <div className="flex space-x-2 pt-2">
-                  <Button variant="outline" size="sm" className="flex-1">
+                  <Button 
+                    variant="outline" 
+                    size="sm" 
+                    className="flex-1"
+                    onClick={() => router.push(`/products/${product.id}`)}
+                  >
                     <Eye className="w-4 h-4 mr-1" />
                     View
                   </Button>
-                  <Button variant="outline" size="sm" className="flex-1">
+                  <Button 
+                    variant="outline" 
+                    size="sm" 
+                    className="flex-1"
+                    onClick={() => router.push(`/products/${product.id}/edit`)}
+                  >
                     <Edit className="w-4 h-4 mr-1" />
                     Edit
                   </Button>
-                  <Button variant="outline" size="sm" className="text-red-600 hover:text-red-700">
+                  <Button 
+                    variant="outline" 
+                    size="sm" 
+                    className="text-red-600 hover:text-red-700"
+                    onClick={async () => {
+                      if (window.confirm('Are you sure you want to delete this product?')) {
+                        try {
+                          await deleteProduct(product.id);
+                          toast.success('Product deleted successfully');
+                          loadProducts();
+                        } catch (error) {
+                          toast.error('Failed to delete product');
+                        }
+                      }
+                    }}
+                  >
                     <Trash2 className="w-4 h-4" />
                   </Button>
                 </div>

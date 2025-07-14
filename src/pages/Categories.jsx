@@ -2,10 +2,15 @@ import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
 import { Button } from '../components/ui/button';
 import { Plus, FolderOpen, Edit, Trash2, Eye } from 'lucide-react';
+import { useRouter } from 'next/navigation';
+import { toast } from 'sonner';
+import { useSupabase } from '../hooks/useSupabase';
 import { useSupabase } from '../hooks/useSupabase';
 import { AddCategoryModal } from '../components/AddCategoryModal';
 
 export function Categories() {
+  const router = useRouter();
+  const { deleteCategory } = useSupabase();
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showAddModal, setShowAddModal] = useState(false);
@@ -100,15 +105,40 @@ export function Categories() {
               </CardHeader>
               <CardContent className="space-y-3">
                 <div className="flex space-x-2">
-                  <Button variant="outline" size="sm" className="flex-1">
+                  <Button 
+                    variant="outline" 
+                    size="sm" 
+                    className="flex-1"
+                    onClick={() => router.push(`/categories/${category.id}`)}
+                  >
                     <Eye className="w-4 h-4 mr-1" />
                     View
                   </Button>
-                  <Button variant="outline" size="sm" className="flex-1">
+                  <Button 
+                    variant="outline" 
+                    size="sm" 
+                    className="flex-1"
+                    onClick={() => router.push(`/categories/${category.id}/edit`)}
+                  >
                     <Edit className="w-4 h-4 mr-1" />
                     Edit
                   </Button>
-                  <Button variant="outline" size="sm" className="text-red-600 hover:text-red-700">
+                  <Button 
+                    variant="outline" 
+                    size="sm" 
+                    className="text-red-600 hover:text-red-700"
+                    onClick={async () => {
+                      if (window.confirm('Are you sure you want to delete this category?')) {
+                        try {
+                          await deleteCategory(category.id);
+                          toast.success('Category deleted successfully');
+                          loadCategories();
+                        } catch (error) {
+                          toast.error('Failed to delete category');
+                        }
+                      }
+                    }}
+                  >
                     <Trash2 className="w-4 h-4" />
                   </Button>
                 </div>

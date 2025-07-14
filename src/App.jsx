@@ -6,6 +6,8 @@ import { Orders } from './pages/Orders';
 import { Users } from './pages/Users';
 import { Categories } from './pages/Categories';
 import { Settings } from './pages/Settings';
+import { Usage } from './pages/Usage';
+import { AdminPlanLimits } from './pages/AdminPlanLimits';
 import './App.css';
 
 function App() {
@@ -23,6 +25,10 @@ function App() {
         return <Orders />;
       case 'users':
         return <Users />;
+      case 'usage':
+        return <Usage />;
+      case 'admin-plan-limits':
+        return <AdminPlanLimits />;
       case 'settings':
         return <Settings />;
       default:

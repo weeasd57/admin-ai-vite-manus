@@ -5,7 +5,9 @@ import {
   ShoppingCart, 
   Users, 
   Settings, 
-  FolderOpen 
+  FolderOpen,
+  BarChart3,
+  Shield
 } from 'lucide-react';
 import { cn } from '../lib/utils';
 
@@ -39,6 +41,18 @@ const sidebarItems = [
     label: 'Users',
     icon: Users,
     path: '/users'
+  },
+  {
+    id: 'usage',
+    label: 'Usage',
+    icon: BarChart3,
+    path: '/usage'
+  },
+  {
+    id: 'admin-plan-limits',
+    label: 'Plan Limits',
+    icon: Shield,
+    path: '/admin-plan-limits'
   },
   {
     id: 'settings',

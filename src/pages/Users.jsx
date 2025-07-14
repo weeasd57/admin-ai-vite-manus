@@ -2,13 +2,16 @@ import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
 import { Badge } from '../components/ui/badge';
 import { Button } from '../components/ui/button';
-import { Users as UsersIcon, Plus, Edit, Trash2, Eye, User } from 'lucide-react';
+import { Users as UsersIcon, Edit, Trash2, Eye } from 'lucide-react';
+import { useRouter } from 'next/navigation';
+import { toast } from 'sonner';
 import { useSupabase } from '../hooks/useSupabase';
 
 export function Users() {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
-  const { getUsers } = useSupabase();
+  const { getUsers, deleteUser } = useSupabase();
+  const router = useRouter();
 
   useEffect(() => {
     loadUsers();
@@ -67,15 +70,9 @@ export function Users() {
   return (
     <div className="p-6 space-y-6">
       {/* Header */}
-      <div className="flex justify-between items-center">
-        <div>
-          <h1 className="text-3xl font-bold text-gray-900">Users</h1>
-          <p className="text-gray-600 mt-2">Manage user accounts and permissions</p>
-        </div>
-        <Button className="flex items-center space-x-2">
-          <Plus className="w-4 h-4" />
-          <span>Add User</span>
-        </Button>
+      <div>
+        <h1 className="text-3xl font-bold text-gray-900">Users</h1>
+        <p className="text-gray-600 mt-2">Manage user accounts and permissions</p>
       </div>
 
       {/* Users Grid */}
@@ -87,10 +84,7 @@ export function Users() {
             <p className="text-gray-500 text-center mb-4">
               Get started by adding your first user to the system.
             </p>
-            <Button className="flex items-center space-x-2">
-              <Plus className="w-4 h-4" />
-              <span>Add User</span>
-            </Button>
+            <p className="text-sm text-gray-500">No users available to display</p>
           </CardContent>
         </Card>
       ) : (
@@ -143,15 +137,41 @@ export function Users() {
                 </div>
 
                 <div className="flex space-x-2 pt-2">
-                  <Button variant="outline" size="sm" className="flex-1">
+                  <Button 
+                    variant="outline" 
+                    size="sm" 
+                    className="flex-1"
+                    onClick={() => router.push(`/users/${user.id}`)}
+                  >
                     <Eye className="w-4 h-4 mr-1" />
                     View
                   </Button>
-                  <Button variant="outline" size="sm" className="flex-1">
+                  <Button 
+                    variant="outline" 
+                    size="sm" 
+                    className="flex-1"
+                    onClick={() => router.push(`/users/${user.id}/edit`)}
+                  >
                     <Edit className="w-4 h-4 mr-1" />
                     Edit
                   </Button>
-                  <Button variant="outline" size="sm" className="text-red-600 hover:text-red-700">
+                  <Button 
+                    variant="outline" 
+                    size="sm" 
+                    className="text-red-600 hover:text-red-700"
+                    onClick={async () => {
+                      if (window.confirm(`Are you sure you want to delete ${user.name || 'this user'}? This action cannot be undone.`)) {
+                        try {
+                          await deleteUser(user.id);
+                          toast.success('User deleted successfully');
+                          loadUsers();
+                        } catch (error) {
+                          console.error('Error deleting user:', error);
+                          toast.error('Failed to delete user');
+                        }
+                      }
+                    }}
+                  >
                     <Trash2 className="w-4 h-4" />
                   </Button>
                 </div>
