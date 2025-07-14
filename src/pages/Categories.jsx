@@ -1,20 +1,33 @@
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
 import { Button } from '../components/ui/button';
-import { Plus, FolderOpen, Edit, Trash2, Eye } from 'lucide-react';
-import { useRouter } from 'next/navigation';
+import { Plus, FolderOpen, Edit, Trash2 } from 'lucide-react';
+import {
+  AlertDialog,
+
+  AlertDialogContent,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogCancel,
+  AlertDialogAction,
+} from '../components/ui/alert-dialog';
+import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 import { useSupabase } from '../hooks/useSupabase';
-import { useSupabase } from '../hooks/useSupabase';
 import { AddCategoryModal } from '../components/AddCategoryModal';
+import { EditCategoryModal } from '../components/EditCategoryModal';
 
 export function Categories() {
-  const router = useRouter();
-  const { deleteCategory } = useSupabase();
+  const navigate = useNavigate();
+  const { deleteCategory, getCategoryById, getCategories } = useSupabase();
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showAddModal, setShowAddModal] = useState(false);
-  const { getCategories } = useSupabase();
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [editTarget, setEditTarget] = useState(null);
+  const [deleteTarget, setDeleteTarget] = useState(null);
 
   useEffect(() => {
     loadCategories();
@@ -101,46 +114,39 @@ export function Categories() {
                     </div>
                   )}
                 </div>
-                <CardTitle className="text-lg text-center">{category.name}</CardTitle>
+                <CardTitle className="text-lg text-center">
+                  {category.name}
+                  {category.name.toLowerCase() === 'public' && (
+                    <span className="text-xs text-blue-600 ml-2">(Protected)</span>
+                  )}
+                </CardTitle>
               </CardHeader>
               <CardContent className="space-y-3">
                 <div className="flex space-x-2">
+                  
                   <Button 
                     variant="outline" 
                     size="sm" 
                     className="flex-1"
-                    onClick={() => router.push(`/categories/${category.id}`)}
-                  >
-                    <Eye className="w-4 h-4 mr-1" />
-                    View
-                  </Button>
-                  <Button 
-                    variant="outline" 
-                    size="sm" 
-                    className="flex-1"
-                    onClick={() => router.push(`/categories/${category.id}/edit`)}
+                    onClick={() => {
+                      setEditTarget(category.id);
+                      setShowEditModal(true);
+                    }}
                   >
                     <Edit className="w-4 h-4 mr-1" />
                     Edit
                   </Button>
-                  <Button 
-                    variant="outline" 
-                    size="sm" 
-                    className="text-red-600 hover:text-red-700"
-                    onClick={async () => {
-                      if (window.confirm('Are you sure you want to delete this category?')) {
-                        try {
-                          await deleteCategory(category.id);
-                          toast.success('Category deleted successfully');
-                          loadCategories();
-                        } catch (error) {
-                          toast.error('Failed to delete category');
-                        }
-                      }
-                    }}
-                  >
-                    <Trash2 className="w-4 h-4" />
-                  </Button>
+                  {category.name.toLowerCase() !== 'public' && (
+                    <Button 
+                      variant="outline" 
+                      size="sm" 
+                      className="text-red-600 hover:text-red-700"
+                      onClick={() => setDeleteTarget(category)}
+                    >
+                      <Trash2 className="w-4 h-4 mr-1" />
+                      Delete
+                    </Button>
+                  )}
                 </div>
               </CardContent>
             </Card>
@@ -148,13 +154,64 @@ export function Categories() {
         </div>
       )}
 
+      {/* Delete Confirmation Dialog */}
+      <AlertDialog open={!!deleteTarget} onOpenChange={() => setDeleteTarget(null)}>
+        <AlertDialogContent className="bg-white rounded-lg p-6 w-full max-w-sm">
+          <AlertDialogHeader>
+            <AlertDialogTitle>Delete Category</AlertDialogTitle>
+            <AlertDialogDescription>
+              Are you sure you want to delete <strong>{deleteTarget?.name}</strong>? This action cannot be undone.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter className="flex justify-end space-x-2 mt-4">
+            <AlertDialogCancel asChild>
+              <Button variant="outline">Cancel</Button>
+            </AlertDialogCancel>
+            <AlertDialogAction asChild>
+              <Button
+                variant="destructive"
+                onClick={async () => {
+                  try {
+                    const category = await getCategoryById(deleteTarget.id);
+                    if (category.name.toLowerCase() === 'public') {
+                      throw new Error('Cannot delete the public category');
+                    }
+                    await deleteCategory(deleteTarget.id);
+                    toast.success('Category deleted successfully');
+                    loadCategories();
+                  } catch {
+                    toast.error('Failed to delete category');
+                  } finally {
+                    setDeleteTarget(null);
+                  }
+                }}
+              >
+                Delete
+              </Button>
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
       {/* Add Category Modal */}
       <AddCategoryModal
         isOpen={showAddModal}
         onClose={() => setShowAddModal(false)}
         onSuccess={handleAddSuccess}
       />
+
+      {/* Edit Category Modal */}
+      <EditCategoryModal
+        isOpen={showEditModal}
+        onClose={() => {
+          setShowEditModal(false);
+          setEditTarget(null);
+        }}
+        categoryId={editTarget}
+        onSuccess={handleAddSuccess}
+      />
     </div>
   );
 }
+
 

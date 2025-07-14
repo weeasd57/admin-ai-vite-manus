@@ -41,6 +41,103 @@ export function useSupabase() {
     }
   };
 
+  const updateCategory = async (id, categoryData) => {
+    try {
+      setLoading(true);
+      const { data, error } = await supabase
+        .from('categories')
+        .update(categoryData)
+        .eq('id', id)
+        .select();
+      
+      if (error) throw error;
+      return data[0];
+    } catch (error) {
+      console.error('Error updating category:', error);
+      throw error;
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const deleteCategory = async (id) => {
+    try {
+      setLoading(true);
+      
+      // First check if this is the "public" category and get category data
+      const { data: category, error: fetchError } = await supabase
+        .from('categories')
+        .select('name, image_url')
+        .eq('id', id)
+        .single();
+      
+      if (fetchError) throw fetchError;
+      
+      if (category.name.toLowerCase() === 'public') {
+        throw new Error('Cannot delete the public category');
+      }
+      
+      // Get all products in this category to delete their images
+      const { data: products, error: productsError } = await supabase
+        .from('products')
+        .select('id, image_urls')
+        .eq('category_id', id);
+      
+      if (productsError) throw productsError;
+      
+      // Delete all product images associated with this category
+      if (products && products.length > 0) {
+        for (const product of products) {
+          // Delete additional product images
+          if (product.image_urls && Array.isArray(product.image_urls)) {
+            for (const imageUrl of product.image_urls) {
+              await deleteImage(imageUrl);
+            }
+          }
+        }
+      }
+      
+      // Delete the category from database (this will cascade delete products due to foreign key)
+      const { error } = await supabase
+        .from('categories')
+        .delete()
+        .eq('id', id);
+      
+      if (error) throw error;
+      
+      // Delete category image from storage
+      if (category.image_url) {
+        await deleteImage(category.image_url);
+      }
+      
+      return true;
+    } catch (error) {
+      console.error('Error deleting category:', error);
+      throw error;
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const getCategoryById = async (id) => {
+    try {
+      setLoading(true);
+      const { data, error } = await supabase
+        .from('categories')
+        .select('*')
+        .eq('id', id)
+        .single();
+      
+      if (error) throw error;
+      return data;
+    } catch (error) {
+      console.error('Error fetching category:', error);
+      throw error;
+    } finally {
+      setLoading(false);
+    }
+  };
+
   // Products
   const getProducts = async () => {
     try {
@@ -78,6 +175,99 @@ export function useSupabase() {
       return data[0];
     } catch (error) {
       console.error('Error adding product:', error);
+      throw error;
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const updateProduct = async (id, productData) => {
+    try {
+      setLoading(true);
+      const { data, error } = await supabase
+        .from('products')
+        .update(productData)
+        .eq('id', id)
+        .select();
+      
+      if (error) throw error;
+      return data[0];
+    } catch (error) {
+      console.error('Error updating product:', error);
+      throw error;
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const deleteProduct = async (id) => {
+    try {
+      setLoading(true);
+      
+      // First get the product data to retrieve image URLs
+      const { data: product, error: fetchError } = await supabase
+        .from('products')
+        .select('image_urls')
+        .eq('id', id)
+        .single();
+      
+      if (fetchError) throw fetchError;
+      
+      // Delete associated images from storage
+      if (product.image_urls) {
+        for (const imageUrl of product.image_urls) {
+          await deleteImage(imageUrl);
+        }
+      }
+
+      // Delete the product from database
+      const { error } = await supabase
+        .from('products')
+        .delete()
+        .eq('id', id);
+      
+      if (error) throw error;
+      
+      // Delete main image from storage
+      if (product.image_url) {
+        await deleteImage(product.image_url);
+      }
+      
+      // Delete additional images from storage (if any)
+      if (product.images && Array.isArray(product.images)) {
+        for (const imageUrl of product.images) {
+          await deleteImage(imageUrl);
+        }
+      }
+      
+      return true;
+    } catch (error) {
+      console.error('Error deleting product:', error);
+      throw error;
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const getProductById = async (id) => {
+    try {
+      setLoading(true);
+      const { data, error } = await supabase
+        .from('products')
+        .select(`
+          *,
+          categories (
+            id,
+            name
+          )
+        `)
+        .eq('id', id)
+        .single();
+      
+      if (error) throw error;
+      return data;
+    } catch (error) {
+      console.error('Error fetching product:', error);
       throw error;
     } finally {
       setLoading(false);
@@ -220,17 +410,48 @@ export function useSupabase() {
     }
   };
 
+  // Delete Image from Storage
+  const deleteImage = async (imageUrl) => {
+    try {
+      if (!imageUrl) return;
+      
+      // Extract bucket and file path from public URL
+      const match = imageUrl.match(/storage\/v1\/object\/public\/([^/]+)\/(.+)$/);
+      if (!match) return; // invalid URL
+      const bucket = match[1];           // e.g. 'images'
+      const filePath = match[2];         // e.g. 'categories/xyz.png'
+
+      const { error } = await supabase.storage
+        .from(bucket)
+        .remove([filePath]);
+
+      if (error) {
+        console.error('Error deleting image:', error);
+        // ignore deletion failure so primary operation continues
+      }
+    } catch (error) {
+      console.error('Error deleting image:', error);
+    }
+  };
+
   return {
     loading,
     getCategories,
     addCategory,
+    updateCategory,
+    deleteCategory,
+    getCategoryById,
     getProducts,
     addProduct,
+    updateProduct,
+    deleteProduct,
+    getProductById,
     getOrders,
     getUsers,
     getAppSettings,
     updateAppSettings,
-    uploadImage
+    uploadImage,
+    deleteImage
   };
 }
 

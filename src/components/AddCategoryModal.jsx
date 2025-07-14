@@ -2,13 +2,16 @@ import React, { useState } from 'react';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
 import { Label } from './ui/label';
+import { Textarea } from './ui/textarea';
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
-import { X, Upload, Save } from 'lucide-react';
+import { X, Save, Upload } from 'lucide-react';
 import { useSupabase } from '../hooks/useSupabase';
+import { toast } from 'sonner';
 
 export function AddCategoryModal({ isOpen, onClose, onSuccess }) {
   const [formData, setFormData] = useState({
     name: '',
+    description: '',
     image_url: ''
   });
   const [loading, setLoading] = useState(false);
@@ -38,7 +41,7 @@ export function AddCategoryModal({ isOpen, onClose, onSuccess }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!formData.name.trim()) {
-      alert('يرجى إدخال اسم الفئة');
+      toast.error('يرجى إدخال اسم الفئة');
       return;
     }
 
@@ -53,29 +56,30 @@ export function AddCategoryModal({ isOpen, onClose, onSuccess }) {
 
       const categoryData = {
         name: formData.name.trim(),
+        description: formData.description.trim(),
         image_url: imageUrl
       };
 
       await addCategory(categoryData);
       
       // Reset form
-      setFormData({ name: '', image_url: '' });
+      setFormData({ name: '', description: '', image_url: '' });
       setImageFile(null);
       
       onSuccess && onSuccess();
       onClose();
       
-      alert('تم إضافة الفئة بنجاح!');
+      toast.success('تم إضافة الفئة بنجاح!');
     } catch (error) {
       console.error('Error adding category:', error);
-      alert('حدث خطأ أثناء إضافة الفئة');
+      toast.error('حدث خطأ أثناء إضافة الفئة');
     } finally {
       setLoading(false);
     }
   };
 
   const handleClose = () => {
-    setFormData({ name: '', image_url: '' });
+    setFormData({ name: '', description: '', image_url: '' });
     setImageFile(null);
     onClose();
   };
@@ -103,6 +107,17 @@ export function AddCategoryModal({ isOpen, onClose, onSuccess }) {
                 onChange={(e) => handleInputChange('name', e.target.value)}
                 placeholder="أدخل اسم الفئة"
                 required
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="description">الوصف</Label>
+              <Textarea
+                id="description"
+                value={formData.description}
+                onChange={(e) => handleInputChange('description', e.target.value)}
+                placeholder="أدخل وصفًا مختصرًا للفئة"
+                rows={3}
               />
             </div>
 

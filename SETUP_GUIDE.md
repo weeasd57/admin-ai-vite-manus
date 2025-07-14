@@ -65,6 +65,7 @@ CREATE TABLE categories (
   id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
   name VARCHAR(255) NOT NULL,
   image_url TEXT,
+  description TEXT,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
@@ -76,7 +77,7 @@ CREATE TABLE products (
   description TEXT,
   price DECIMAL(10,2) NOT NULL,
   sale_price DECIMAL(10,2),
-  category_id UUID REFERENCES categories(id),
+  category_id UUID REFERENCES categories(id) ON DELETE SET NULL,
   image_urls TEXT[],
   is_hot BOOLEAN DEFAULT FALSE,
   is_new BOOLEAN DEFAULT FALSE,

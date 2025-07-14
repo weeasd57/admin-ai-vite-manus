@@ -182,28 +182,6 @@ export function Settings() {
           </CardContent>
         </Card>
 
-        {/* Quick Actions */}
-        <Card>
-          <CardHeader>
-            <CardTitle>Quick Actions</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-3">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-              <Button variant="outline" className="justify-start">
-                <span>Export Data</span>
-              </Button>
-              <Button variant="outline" className="justify-start">
-                <span>Import Data</span>
-              </Button>
-              <Button variant="outline" className="justify-start">
-                <span>Clear Cache</span>
-              </Button>
-              <Button variant="outline" className="justify-start">
-                <span>Reset Settings</span>
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
       </div>
     </div>
   );

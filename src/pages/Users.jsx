@@ -3,7 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card'
 import { Badge } from '../components/ui/badge';
 import { Button } from '../components/ui/button';
 import { Users as UsersIcon, Edit, Trash2, Eye } from 'lucide-react';
-import { useRouter } from 'next/navigation';
+import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 import { useSupabase } from '../hooks/useSupabase';
 
@@ -11,7 +11,7 @@ export function Users() {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const { getUsers, deleteUser } = useSupabase();
-  const router = useRouter();
+  const navigate = useNavigate();
 
   useEffect(() => {
     loadUsers();
@@ -141,7 +141,7 @@ export function Users() {
                     variant="outline" 
                     size="sm" 
                     className="flex-1"
-                    onClick={() => router.push(`/users/${user.id}`)}
+                    onClick={() => navigate(`/users/${user.id}`)}
                   >
                     <Eye className="w-4 h-4 mr-1" />
                     View
@@ -150,7 +150,7 @@ export function Users() {
                     variant="outline" 
                     size="sm" 
                     className="flex-1"
-                    onClick={() => router.push(`/users/${user.id}/edit`)}
+                    onClick={() => navigate(`/users/${user.id}/edit`)}
                   >
                     <Edit className="w-4 h-4 mr-1" />
                     Edit
@@ -183,4 +183,5 @@ export function Users() {
     </div>
   );
 }
+
 

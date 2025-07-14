@@ -7,6 +7,7 @@ import { Select } from './ui/select';
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
 import { X, Save, Upload } from 'lucide-react';
 import { useSupabase } from '../hooks/useSupabase';
+import { toast } from 'sonner';
 
 export function AddProductModal({ isOpen, onClose, onSuccess }) {
   const [formData, setFormData] = useState({
@@ -65,7 +66,7 @@ export function AddProductModal({ isOpen, onClose, onSuccess }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!formData.name.trim() || !formData.price) {
-      alert('يرجى إدخال اسم المنتج والسعر');
+      toast.error('يرجى إدخال اسم المنتج والسعر');
       return;
     }
 
@@ -112,10 +113,10 @@ export function AddProductModal({ isOpen, onClose, onSuccess }) {
       onSuccess && onSuccess();
       onClose();
       
-      alert('تم إضافة المنتج بنجاح!');
+      toast.success('تم إضافة المنتج بنجاح!');
     } catch (error) {
       console.error('Error adding product:', error);
-      alert('حدث خطأ أثناء إضافة المنتج');
+      toast.error('حدث خطأ أثناء إضافة المنتج');
     } finally {
       setLoading(false);
     }

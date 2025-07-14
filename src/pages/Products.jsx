@@ -2,20 +2,32 @@ import React, { useState, useEffect } from 'react';
 import { Button } from '../components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
 import { Badge } from '../components/ui/badge';
-import { Plus, Package, Edit, Trash2, Eye } from 'lucide-react';
-import { useRouter } from 'next/navigation';
+import { Plus, Package, Edit, Trash2 } from 'lucide-react';
+import {
+  AlertDialog,
+  AlertDialogContent,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogCancel,
+  AlertDialogAction,
+} from '../components/ui/alert-dialog';
+import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 import { useSupabase } from '../hooks/useSupabase';
-import { useSupabase } from '../hooks/useSupabase';
 import { AddProductModal } from '../components/AddProductModal';
+import { EditProductModal } from '../components/EditProductModal';
 
 export function Products() {
-  const router = useRouter();
-  const { deleteProduct } = useSupabase();
+  const navigate = useNavigate();
+  const { deleteProduct, getProducts } = useSupabase();
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showAddModal, setShowAddModal] = useState(false);
-  const { getProducts } = useSupabase();
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [editTarget, setEditTarget] = useState(null);
+  const [deleteTarget, setDeleteTarget] = useState(null);
 
   useEffect(() => {
     loadProducts();
@@ -154,20 +166,15 @@ export function Products() {
                 </div>
 
                 <div className="flex space-x-2 pt-2">
+                  
                   <Button 
                     variant="outline" 
                     size="sm" 
                     className="flex-1"
-                    onClick={() => router.push(`/products/${product.id}`)}
-                  >
-                    <Eye className="w-4 h-4 mr-1" />
-                    View
-                  </Button>
-                  <Button 
-                    variant="outline" 
-                    size="sm" 
-                    className="flex-1"
-                    onClick={() => router.push(`/products/${product.id}/edit`)}
+                    onClick={() => {
+                      setEditTarget(product.id);
+                      setShowEditModal(true);
+                    }}
                   >
                     <Edit className="w-4 h-4 mr-1" />
                     Edit
@@ -176,19 +183,10 @@ export function Products() {
                     variant="outline" 
                     size="sm" 
                     className="text-red-600 hover:text-red-700"
-                    onClick={async () => {
-                      if (window.confirm('Are you sure you want to delete this product?')) {
-                        try {
-                          await deleteProduct(product.id);
-                          toast.success('Product deleted successfully');
-                          loadProducts();
-                        } catch (error) {
-                          toast.error('Failed to delete product');
-                        }
-                      }
-                    }}
+                    onClick={() => setDeleteTarget(product)}
                   >
-                    <Trash2 className="w-4 h-4" />
+                    <Trash2 className="w-4 h-4 mr-1" />
+                    Delete
                   </Button>
                 </div>
               </CardContent>
@@ -197,13 +195,60 @@ export function Products() {
         </div>
       )}
 
+      {/* Delete Confirmation Dialog */}
+      <AlertDialog open={!!deleteTarget} onOpenChange={() => setDeleteTarget(null)}>
+        <AlertDialogContent className="bg-white rounded-lg p-6 w-full max-w-sm">
+          <AlertDialogHeader>
+            <AlertDialogTitle>Delete Product</AlertDialogTitle>
+            <AlertDialogDescription>
+              Are you sure you want to delete <strong>{deleteTarget?.name}</strong>? This action cannot be undone.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter className="flex justify-end space-x-2 mt-4">
+            <AlertDialogCancel asChild>
+              <Button variant="outline">Cancel</Button>
+            </AlertDialogCancel>
+            <AlertDialogAction asChild>
+              <Button
+                variant="destructive"
+                onClick={async () => {
+                  try {
+                    await deleteProduct(deleteTarget.id);
+                    toast.success('Product deleted successfully');
+                    loadProducts();
+                  } catch (error) {
+                    toast.error('Failed to delete product');
+                  } finally {
+                    setDeleteTarget(null);
+                  }
+                }}
+              >
+                Delete
+              </Button>
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
       {/* Add Product Modal */}
       <AddProductModal
         isOpen={showAddModal}
         onClose={() => setShowAddModal(false)}
         onSuccess={handleAddSuccess}
       />
+
+      {/* Edit Product Modal */}
+      <EditProductModal
+        isOpen={showEditModal}
+        onClose={() => {
+          setShowEditModal(false);
+          setEditTarget(null);
+        }}
+        productId={editTarget}
+        onSuccess={handleAddSuccess}
+      />
     </div>
   );
 }
+
 
