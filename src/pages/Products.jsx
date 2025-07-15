@@ -78,8 +78,8 @@ export function Products() {
       {/* Header */}
       <div className="flex justify-between items-center">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">Products</h1>
-          <p className="text-gray-600 mt-2">Manage your product inventory</p>
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Products</h1>
+          <p className="text-gray-600 dark:text-gray-300 mt-2">Manage your product inventory</p>
         </div>
         <Button 
           className="flex items-center space-x-2"
@@ -129,17 +129,17 @@ export function Products() {
                 <CardTitle className="text-lg">{product.name}</CardTitle>
               </CardHeader>
               <CardContent className="space-y-3">
-                <p className="text-sm text-gray-600 line-clamp-2">
+                <p className="text-sm text-gray-600 dark:text-gray-300 line-clamp-2">
                   {product.description}
                 </p>
                 
                 <div className="flex items-center justify-between">
                   <div>
-                    <span className="text-lg font-bold text-gray-900">
+                    <span className="text-lg font-bold text-gray-900 dark:text-white">
                       {formatPrice(product.price)}
                     </span>
                     {product.on_sale && product.sale_price && (
-                      <span className="text-sm text-green-600 ml-2">
+                      <span className="text-sm text-green-600 dark:text-green-400 ml-2">
                         Sale: {formatPrice(product.sale_price)}
                       </span>
                     )}
@@ -157,11 +157,11 @@ export function Products() {
                   </div>
                 </div>
 
-                <div className="text-xs text-gray-500">
+                <div className="text-xs text-gray-500 dark:text-gray-400">
                   Category: {product.categories?.name || 'Uncategorized'}
                 </div>
 
-                <div className="text-xs text-gray-500">
+                <div className="text-xs text-gray-500 dark:text-gray-400">
                   Created: {formatDate(product.created_at)}
                 </div>
 
