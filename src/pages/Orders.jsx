@@ -56,10 +56,10 @@ export function Orders() {
     return (
       <div className="p-6">
         <div className="animate-pulse">
-          <div className="h-8 bg-gray-200 rounded w-1/4 mb-6"></div>
+          <div className="h-8 bg-gray-200 dark:bg-gray-700 rounded w-1/4 mb-6"></div>
           <div className="space-y-4">
             {[...Array(5)].map((_, i) => (
-              <div key={i} className="h-32 bg-gray-200 rounded-lg"></div>
+              <div key={i} className="h-32 bg-gray-200 dark:bg-gray-700 rounded-lg"></div>
             ))}
           </div>
         </div>
@@ -71,17 +71,17 @@ export function Orders() {
     <div className="p-6 space-y-6">
       {/* Header */}
       <div>
-        <h1 className="text-3xl font-bold text-gray-900">Orders</h1>
-        <p className="text-gray-600 mt-2">Manage customer orders and track their status</p>
+        <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Orders</h1>
+        <p className="text-gray-600 dark:text-gray-300 mt-2">Manage customer orders and track their status</p>
       </div>
 
       {/* Orders List */}
       {orders.length === 0 ? (
         <Card>
           <CardContent className="flex flex-col items-center justify-center py-12">
-            <ShoppingCart className="w-12 h-12 text-gray-400 mb-4" />
-            <h3 className="text-lg font-medium text-gray-900 mb-2">No orders found</h3>
-            <p className="text-gray-500 text-center">
+            <ShoppingCart className="w-12 h-12 text-gray-400 dark:text-gray-500 mb-4" />
+            <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100 mb-2">No orders found</h3>
+            <p className="text-gray-500 dark:text-gray-400 text-center">
               Orders will appear here once customers start placing them.
             </p>
           </CardContent>
@@ -97,10 +97,10 @@ export function Orders() {
                       <FileText className="w-6 h-6 text-blue-600" />
                     </div>
                     <div>
-                      <h3 className="text-lg font-semibold text-gray-900">
+                      <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
                         Order #{order.id?.slice(0, 8)}
                       </h3>
-                      <p className="text-sm text-gray-500">
+                      <p className="text-sm text-gray-500 dark:text-gray-400">
                         {formatDate(order.created_at)}
                       </p>
                     </div>
@@ -109,7 +109,7 @@ export function Orders() {
                     <Badge className={getStatusColor(order.status)}>
                       {order.status || 'pending'}
                     </Badge>
-                    <span className="text-lg font-bold text-gray-900">
+                    <span className="text-lg font-bold text-gray-900 dark:text-gray-100">
                       {formatPrice(order.total)}
                     </span>
                   </div>
@@ -117,26 +117,26 @@ export function Orders() {
 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
                   <div>
-                    <p className="text-sm font-medium text-gray-500">Customer</p>
-                    <p className="text-sm text-gray-900">
+                    <p className="text-sm font-medium text-gray-500 dark:text-gray-400">Customer</p>
+                    <p className="text-sm text-gray-900 dark:text-gray-100">
                       {order.customer_name || 'N/A'}
                     </p>
                   </div>
                   <div>
-                    <p className="text-sm font-medium text-gray-500">Phone</p>
-                    <p className="text-sm text-gray-900">
+                    <p className="text-sm font-medium text-gray-500 dark:text-gray-400">Phone</p>
+                    <p className="text-sm text-gray-900 dark:text-gray-100">
                       {order.phone || 'N/A'}
                     </p>
                   </div>
                   <div>
-                    <p className="text-sm font-medium text-gray-500">Payment Method</p>
-                    <p className="text-sm text-gray-900">
+                    <p className="text-sm font-medium text-gray-500 dark:text-gray-400">Payment Method</p>
+                    <p className="text-sm text-gray-900 dark:text-gray-100">
                       {order.payment_method || 'N/A'}
                     </p>
                   </div>
                   <div>
-                    <p className="text-sm font-medium text-gray-500">Items</p>
-                    <p className="text-sm text-gray-900">
+                    <p className="text-sm font-medium text-gray-500 dark:text-gray-400">Items</p>
+                    <p className="text-sm text-gray-900 dark:text-gray-100">
                       {order.order_items?.length || 0} items
                     </p>
                   </div>
@@ -144,17 +144,17 @@ export function Orders() {
 
                 {order.address && (
                   <div className="mb-4">
-                    <p className="text-sm font-medium text-gray-500">Shipping Address</p>
-                    <p className="text-sm text-gray-900">{order.address}</p>
+                    <p className="text-sm font-medium text-gray-500 dark:text-gray-400">Shipping Address</p>
+                    <p className="text-sm text-gray-900 dark:text-gray-100">{order.address}</p>
                   </div>
                 )}
 
                 {order.order_items && order.order_items.length > 0 && (
                   <div className="mb-4">
-                    <p className="text-sm font-medium text-gray-500 mb-2">Order Items</p>
+                    <p className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-2">Order Items</p>
                     <div className="space-y-2">
                       {order.order_items.slice(0, 3).map((item, index) => (
-                        <div key={index} className="flex items-center space-x-3 p-2 bg-gray-50 rounded-lg">
+                        <div key={index} className="flex items-center space-x-3 p-2 bg-gray-50 dark:bg-gray-800 rounded-lg">
                           {item.image_url && (
                             <img
                               src={item.image_url}
@@ -163,15 +163,15 @@ export function Orders() {
                             />
                           )}
                           <div className="flex-1">
-                            <p className="text-sm font-medium text-gray-900">{item.name}</p>
-                            <p className="text-xs text-gray-500">
+                            <p className="text-sm font-medium text-gray-900 dark:text-gray-100">{item.name}</p>
+                            <p className="text-xs text-gray-500 dark:text-gray-400">
                               Qty: {item.quantity} × {formatPrice(item.price)}
                             </p>
                           </div>
                         </div>
                       ))}
                       {order.order_items.length > 3 && (
-                        <p className="text-xs text-gray-500 text-center">
+                        <p className="text-xs text-gray-500 dark:text-gray-400 text-center">
                           +{order.order_items.length - 3} more items
                         </p>
                       )}

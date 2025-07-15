@@ -50,10 +50,10 @@ export function Categories() {
     return (
       <div className="p-6">
         <div className="animate-pulse">
-          <div className="h-8 bg-gray-200 rounded w-1/4 mb-6"></div>
+          <div className="h-8 bg-gray-200 dark:bg-gray-700 rounded w-1/4 mb-6"></div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             {[...Array(8)].map((_, i) => (
-              <div key={i} className="h-48 bg-gray-200 rounded-lg"></div>
+              <div key={i} className="h-48 bg-gray-200 dark:bg-gray-700 rounded-lg"></div>
             ))}
           </div>
         </div>
@@ -66,8 +66,8 @@ export function Categories() {
       {/* Header */}
       <div className="flex justify-between items-center">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">Categories</h1>
-          <p className="text-gray-600 mt-2">Organize your products into categories</p>
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Categories</h1>
+          <p className="text-gray-600 dark:text-gray-300 mt-2">Organize your products into categories</p>
         </div>
         <Button 
           className="flex items-center space-x-2"
@@ -83,8 +83,8 @@ export function Categories() {
         <Card>
           <CardContent className="flex flex-col items-center justify-center py-12">
             <FolderOpen className="w-12 h-12 text-gray-400 mb-4" />
-            <h3 className="text-lg font-medium text-gray-900 mb-2">No categories found</h3>
-            <p className="text-gray-500 text-center mb-4">
+            <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100 mb-2">No categories found</h3>
+            <p className="text-gray-500 dark:text-gray-400 text-center mb-4">
               Create your first category to start organizing your products.
             </p>
             <Button 
@@ -101,7 +101,7 @@ export function Categories() {
           {categories.map((category) => (
             <Card key={category.id} className="hover:shadow-lg transition-shadow group">
               <CardHeader className="pb-3">
-                <div className="aspect-square bg-gray-100 rounded-lg mb-3 overflow-hidden">
+                <div className="aspect-square bg-gray-100 dark:bg-gray-700 rounded-lg mb-3 overflow-hidden">
                   {category.image_url ? (
                     <img
                       src={category.image_url}
@@ -110,7 +110,7 @@ export function Categories() {
                     />
                   ) : (
                     <div className="w-full h-full flex items-center justify-center">
-                      <FolderOpen className="w-12 h-12 text-gray-400" />
+                      <FolderOpen className="w-12 h-12 text-gray-400 dark:text-gray-500" />
                     </div>
                   )}
                 </div>
