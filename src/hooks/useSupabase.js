@@ -88,7 +88,6 @@ export function useSupabase() {
       // Delete all product images associated with this category
       if (products && products.length > 0) {
         for (const product of products) {
-          // Delete additional product images
           if (product.image_urls && Array.isArray(product.image_urls)) {
             for (const imageUrl of product.image_urls) {
               await deleteImage(imageUrl);
@@ -99,9 +98,9 @@ export function useSupabase() {
       
       // Delete the category from database (this will cascade delete products due to foreign key)
       const { error } = await supabase
-        .from('categories')
+        .from("categories")
         .delete()
-        .eq('id', id);
+        .eq("id", id);
       
       if (error) throw error;
       
@@ -214,7 +213,7 @@ export function useSupabase() {
       if (fetchError) throw fetchError;
       
       // Delete associated images from storage
-      if (product.image_urls) {
+      if (product.image_urls && Array.isArray(product.image_urls)) {
         for (const imageUrl of product.image_urls) {
           await deleteImage(imageUrl);
         }
@@ -222,23 +221,11 @@ export function useSupabase() {
 
       // Delete the product from database
       const { error } = await supabase
-        .from('products')
+        .from("products")
         .delete()
-        .eq('id', id);
+        .eq("id", id);
       
       if (error) throw error;
-      
-      // Delete main image from storage
-      if (product.image_url) {
-        await deleteImage(product.image_url);
-      }
-      
-      // Delete additional images from storage (if any)
-      if (product.images && Array.isArray(product.images)) {
-        for (const imageUrl of product.images) {
-          await deleteImage(imageUrl);
-        }
-      }
       
       return true;
     } catch (error) {
