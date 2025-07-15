@@ -150,6 +150,73 @@ for select
 to anon, authenticated
 using ( bucket_id = 'images' );
 
+-- السماح بحذف الصور (لحذف الصور عند حذف الفئات والمنتجات)
+create policy "public delete images"
+on storage.objects
+for delete
+to anon, authenticated
+using ( bucket_id = 'images' );
+
+-- دالة لحذف الصور المرتبطة بالفئة عند حذف الفئة
+CREATE OR REPLACE FUNCTION delete_category_image()
+RETURNS TRIGGER AS $$
+BEGIN
+  -- حذف الصورة من Storage إذا كانت موجودة
+  IF OLD.image_url IS NOT NULL THEN
+    -- استخراج اسم الملف من URL
+    DECLARE
+      file_name TEXT;
+    BEGIN
+      file_name := split_part(OLD.image_url, '/', -1);
+      -- حذف الملف من bucket images
+      DELETE FROM storage.objects 
+      WHERE bucket_id = 'images' 
+      AND name = file_name;
+    END;
+  END IF;
+  
+  RETURN OLD;
+END;
+$$ LANGUAGE plpgsql;
+
+-- إنشاء trigger لحذف صورة الفئة عند حذف الفئة
+CREATE TRIGGER delete_category_image_trigger
+  BEFORE DELETE ON categories
+  FOR EACH ROW
+  EXECUTE FUNCTION delete_category_image();
+
+-- دالة لحذف الصور المرتبطة بالمنتج عند حذف المنتج
+CREATE OR REPLACE FUNCTION delete_product_images()
+RETURNS TRIGGER AS $$
+DECLARE
+  image_url TEXT;
+  file_name TEXT;
+BEGIN
+  -- حذف جميع الصور المرتبطة بالمنتج
+  IF OLD.image_urls IS NOT NULL THEN
+    FOREACH image_url IN ARRAY OLD.image_urls
+    LOOP
+      IF image_url IS NOT NULL THEN
+        -- استخراج اسم الملف من URL
+        file_name := split_part(image_url, '/', -1);
+        -- حذف الملف من bucket images
+        DELETE FROM storage.objects 
+        WHERE bucket_id = 'images' 
+        AND name = file_name;
+      END IF;
+    END LOOP;
+  END IF;
+  
+  RETURN OLD;
+END;
+$$ LANGUAGE plpgsql;
+
+-- إنشاء trigger لحذف صور المنتج عند حذف المنتج
+CREATE TRIGGER delete_product_images_trigger
+  BEFORE DELETE ON products
+  FOR EACH ROW
+  EXECUTE FUNCTION delete_product_images();
+
 ```
 
 3. انقر على "Run" لتنفيذ الكود

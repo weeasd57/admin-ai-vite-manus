@@ -3,8 +3,10 @@ import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card'
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
-import { Settings as SettingsIcon, Save, DollarSign, Globe, CheckCircle } from 'lucide-react';
+import { Switch } from '../components/ui/switch';
+import { Settings as SettingsIcon, Save, DollarSign, Globe, CheckCircle, Moon, Sun, Monitor } from 'lucide-react';
 import { useSupabase } from '../hooks/useSupabase';
+import { useTheme } from 'next-themes';
 
 export function Settings() {
   const [settings, setSettings] = useState({
@@ -15,6 +17,7 @@ export function Settings() {
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
   const { getAppSettings, updateAppSettings } = useSupabase();
+  const { theme, setTheme } = useTheme();
 
   useEffect(() => {
     loadSettings();
@@ -82,8 +85,8 @@ export function Settings() {
     <div className="p-6 space-y-6">
       {/* Header */}
       <div>
-        <h1 className="text-3xl font-bold text-gray-900">Settings</h1>
-        <p className="text-gray-600 mt-2">Configure your application settings</p>
+        <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Settings</h1>
+        <p className="text-gray-600 dark:text-gray-300 mt-2">Configure your application settings</p>
       </div>
 
       <div className="max-w-2xl space-y-6">
@@ -139,6 +142,49 @@ export function Settings() {
               <p className="text-sm text-gray-500">
                 The default delivery cost for orders
               </p>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Appearance Settings */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center space-x-2">
+              <Monitor className="w-5 h-5" />
+              <span>Appearance</span>
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="space-y-4">
+              <div>
+                <Label className="text-sm font-medium">Theme</Label>
+                <p className="text-sm text-gray-500 mb-3">
+                  Choose your preferred theme for the application
+                </p>
+                <div className="flex gap-3">
+                  {[
+                    { value: 'light', label: 'Light', icon: Sun },
+                    { value: 'dark', label: 'Dark', icon: Moon },
+                    { value: 'system', label: 'System', icon: Monitor }
+                  ].map((themeOption) => {
+                    const Icon = themeOption.icon;
+                    return (
+                      <button
+                        key={themeOption.value}
+                        onClick={() => setTheme(themeOption.value)}
+                        className={`flex items-center space-x-2 px-4 py-2 rounded-lg border transition-colors ${
+                          theme === themeOption.value
+                            ? 'bg-blue-50 dark:bg-blue-900/20 border-blue-200 dark:border-blue-800 text-blue-700 dark:text-blue-300'
+                            : 'bg-white dark:bg-gray-700 border-gray-200 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-600'
+                        }`}
+                      >
+                        <Icon className="w-4 h-4" />
+                        <span className="text-sm font-medium">{themeOption.label}</span>
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
             </div>
           </CardContent>
         </Card>
