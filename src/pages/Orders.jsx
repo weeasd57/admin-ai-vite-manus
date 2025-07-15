@@ -2,13 +2,18 @@ import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
 import { Badge } from '../components/ui/badge';
 import { Button } from '../components/ui/button';
-import { ShoppingCart, Eye, Edit, FileText } from 'lucide-react';
+import { Select } from '../components/ui/select';
+import { ShoppingCart, Eye, Edit, FileText, Trash2, X } from 'lucide-react';
 import { useSupabase } from '../hooks/useSupabase';
+import { toast } from 'sonner';
 
 export function Orders() {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
-  const { getOrders } = useSupabase();
+  const [selectedOrder, setSelectedOrder] = useState(null);
+  const [showDetails, setShowDetails] = useState(false);
+  const [editingStatus, setEditingStatus] = useState(null);
+  const { getOrders, updateOrder, deleteOrder } = useSupabase();
 
   useEffect(() => {
     loadOrders();
@@ -50,6 +55,115 @@ export function Orders() {
 
   const formatPrice = (price) => {
     return `$${parseFloat(price || 0).toFixed(2)}`;
+  };
+
+  const handleStatusUpdate = async (orderId, newStatus) => {
+    try {
+      await updateOrder(orderId, { status: newStatus });
+      toast.success('تم تحديث حالة الطلب بنجاح');
+      setEditingStatus(null);
+      loadOrders();
+    } catch (error) {
+      console.error('Error updating order status:', error);
+      toast.error('فشل في تحديث حالة الطلب');
+    }
+  };
+
+  const handleDeleteOrder = async (orderId) => {
+    if (window.confirm('هل أنت متأكد من حذف هذا الطلب؟ لا يمكن التراجع عن هذا الإجراء.')) {
+      try {
+        await deleteOrder(orderId);
+        toast.success('تم حذف الطلب بنجاح');
+        loadOrders();
+      } catch (error) {
+        console.error('Error deleting order:', error);
+        toast.error('فشل في حذف الطلب');
+      }
+    }
+  };
+
+  const handleViewDetails = (order) => {
+    setSelectedOrder(order);
+    setShowDetails(true);
+  };
+
+  const OrderDetailsModal = () => {
+    if (!showDetails || !selectedOrder) return null;
+
+    return (
+      <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+        <Card className="w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+          <CardHeader>
+            <div className="flex items-center justify-between">
+              <CardTitle>تفاصيل الطلب #{selectedOrder.id?.slice(0, 8)}</CardTitle>
+              <Button variant="ghost" size="sm" onClick={() => setShowDetails(false)}>
+                <X className="w-4 h-4" />
+              </Button>
+            </div>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <p className="font-medium text-gray-500">اسم العميل</p>
+                <p>{selectedOrder.customer_name || 'غير محدد'}</p>
+              </div>
+              <div>
+                <p className="font-medium text-gray-500">رقم الهاتف</p>
+                <p>{selectedOrder.phone || 'غير محدد'}</p>
+              </div>
+              <div>
+                <p className="font-medium text-gray-500">طريقة الدفع</p>
+                <p>{selectedOrder.payment_method || 'غير محدد'}</p>
+              </div>
+              <div>
+                <p className="font-medium text-gray-500">الحالة</p>
+                <Badge className={getStatusColor(selectedOrder.status)}>
+                  {selectedOrder.status || 'pending'}
+                </Badge>
+              </div>
+            </div>
+            
+            {selectedOrder.address && (
+              <div>
+                <p className="font-medium text-gray-500">عنوان التوصيل</p>
+                <p>{selectedOrder.address}</p>
+              </div>
+            )}
+
+            <div>
+              <p className="font-medium text-gray-500 mb-2">عناصر الطلب</p>
+              <div className="space-y-2">
+                {selectedOrder.order_items?.map((item, index) => (
+                  <div key={index} className="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg">
+                    {item.image_url && (
+                      <img
+                        src={item.image_url}
+                        alt={item.name}
+                        className="w-12 h-12 object-cover rounded"
+                      />
+                    )}
+                    <div className="flex-1">
+                      <p className="font-medium">{item.name}</p>
+                      <p className="text-sm text-gray-500">
+                        الكمية: {item.quantity} × {formatPrice(item.price)}
+                      </p>
+                    </div>
+                    <p className="font-medium">{formatPrice(item.quantity * item.price)}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div className="border-t pt-4">
+              <div className="flex justify-between items-center text-lg font-bold">
+                <span>المجموع الكلي:</span>
+                <span>{formatPrice(selectedOrder.total)}</span>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    );
   };
 
   if (loading) {
@@ -180,13 +294,55 @@ export function Orders() {
                 )}
 
                 <div className="flex space-x-2">
-                  <Button variant="outline" size="sm">
+                  <Button 
+                    variant="outline" 
+                    size="sm"
+                    onClick={() => handleViewDetails(order)}
+                  >
                     <Eye className="w-4 h-4 mr-1" />
-                    View Details
+                    عرض التفاصيل
                   </Button>
-                  <Button variant="outline" size="sm">
-                    <Edit className="w-4 h-4 mr-1" />
-                    Update Status
+                  
+                  {editingStatus === order.id ? (
+                    <div className="flex space-x-2">
+                      <select
+                        value={order.status}
+                        onChange={(e) => handleStatusUpdate(order.id, e.target.value)}
+                        className="px-2 py-1 border rounded text-sm"
+                      >
+                        <option value="pending">قيد الانتظار</option>
+                        <option value="processing">قيد المعالجة</option>
+                        <option value="shipped">تم الشحن</option>
+                        <option value="delivered">تم التوصيل</option>
+                        <option value="cancelled">ملغي</option>
+                      </select>
+                      <Button 
+                        variant="outline" 
+                        size="sm"
+                        onClick={() => setEditingStatus(null)}
+                      >
+                        إلغاء
+                      </Button>
+                    </div>
+                  ) : (
+                    <Button 
+                      variant="outline" 
+                      size="sm"
+                      onClick={() => setEditingStatus(order.id)}
+                    >
+                      <Edit className="w-4 h-4 mr-1" />
+                      تعديل الحالة
+                    </Button>
+                  )}
+                  
+                  <Button 
+                    variant="outline" 
+                    size="sm"
+                    className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                    onClick={() => handleDeleteOrder(order.id)}
+                  >
+                    <Trash2 className="w-4 h-4 mr-1" />
+                    حذف
                   </Button>
                 </div>
               </CardContent>
@@ -194,6 +350,8 @@ export function Orders() {
           ))}
         </div>
       )}
+      
+      <OrderDetailsModal />
     </div>
   );
 }

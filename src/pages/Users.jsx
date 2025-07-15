@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
 import { Badge } from '../components/ui/badge';
 import { Button } from '../components/ui/button';
-import { Users as UsersIcon, Edit, Trash2, Eye } from 'lucide-react';
+import { Users as UsersIcon, Trash2 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 import { useSupabase } from '../hooks/useSupabase';
@@ -136,43 +136,26 @@ export function Users() {
                   Joined: {formatDate(user.created_at)}
                 </div>
 
-                <div className="flex space-x-2 pt-2">
+                <div className="flex justify-center pt-2">
                   <Button 
                     variant="outline" 
                     size="sm" 
-                    className="flex-1"
-                    onClick={() => navigate(`/users/${user.id}`)}
-                  >
-                    <Eye className="w-4 h-4 mr-1" />
-                    View
-                  </Button>
-                  <Button 
-                    variant="outline" 
-                    size="sm" 
-                    className="flex-1"
-                    onClick={() => navigate(`/users/${user.id}/edit`)}
-                  >
-                    <Edit className="w-4 h-4 mr-1" />
-                    Edit
-                  </Button>
-                  <Button 
-                    variant="outline" 
-                    size="sm" 
-                    className="text-red-600 hover:text-red-700"
+                    className="text-red-600 hover:text-red-700 hover:bg-red-50"
                     onClick={async () => {
-                      if (window.confirm(`Are you sure you want to delete ${user.name || 'this user'}? This action cannot be undone.`)) {
+                      if (window.confirm(`هل أنت متأكد من حذف ${user.name || 'هذا المستخدم'}؟ لا يمكن التراجع عن هذا الإجراء.`)) {
                         try {
                           await deleteUser(user.id);
-                          toast.success('User deleted successfully');
+                          toast.success('تم حذف المستخدم بنجاح');
                           loadUsers();
                         } catch (error) {
                           console.error('Error deleting user:', error);
-                          toast.error('Failed to delete user');
+                          toast.error('فشل في حذف المستخدم');
                         }
                       }
                     }}
                   >
-                    <Trash2 className="w-4 h-4" />
+                    <Trash2 className="w-4 h-4 mr-1" />
+                    حذف المستخدم
                   </Button>
                 </div>
               </CardContent>

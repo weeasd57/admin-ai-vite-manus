@@ -106,7 +106,7 @@ export function Sidebar({ activeItem, onItemClick }) {
             
             {/* زر إلغاء للأجهزة المحمولة */}
             <button
-              onClick={() => setIsOpen(false)}
+              onClick={toggleSidebar}
               className="md:hidden p-2 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors"
               aria-label="إغلاق الشريط الجانبي"
             >
