@@ -142,10 +142,10 @@ export function AddProductModal({ isOpen, onClose, onSuccess }) {
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-      <Card className="w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+      <Card className="w-full max-w-2xl max-h-[90vh] overflow-y-auto bg-white dark:bg-gray-900">
         <CardHeader>
           <div className="flex items-center justify-between">
-            <CardTitle>إضافة منتج جديد</CardTitle>
+            <CardTitle className="text-gray-900 dark:text-white">إضافة منتج جديد</CardTitle>
             <Button variant="ghost" size="sm" onClick={handleClose}>
               <X className="w-4 h-4" />
             </Button>

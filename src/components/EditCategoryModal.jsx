@@ -105,10 +105,10 @@ export function EditCategoryModal({ isOpen, onClose, categoryId, onSuccess }) {
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div className="bg-white rounded-lg p-6 w-full max-w-md max-h-[90vh] overflow-y-auto">
+      <div className="bg-white dark:bg-gray-900 rounded-lg p-6 w-full max-w-md max-h-[90vh] overflow-y-auto">
         {/* Header */}
         <div className="flex justify-between items-center mb-4">
-          <h2 className="text-xl font-bold">Edit Category</h2>
+          <h2 className="text-xl font-bold text-gray-900 dark:text-white">Edit Category</h2>
           <Button
             variant="ghost"
             size="sm"
@@ -177,9 +177,9 @@ export function EditCategoryModal({ isOpen, onClose, categoryId, onSuccess }) {
                     </Button>
                   </div>
                 ) : (
-                  <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center">
-                    <Upload className="w-8 h-8 text-gray-400 mx-auto mb-2" />
-                    <p className="text-gray-500 text-sm">No image selected</p>
+                  <div className="border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg p-6 text-center">
+                    <Upload className="w-8 h-8 text-gray-400 dark:text-gray-500 mx-auto mb-2" />
+                    <p className="text-gray-500 dark:text-gray-400 text-sm">No image selected</p>
                   </div>
                 )}
                 

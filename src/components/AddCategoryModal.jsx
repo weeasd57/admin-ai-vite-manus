@@ -88,10 +88,10 @@ export function AddCategoryModal({ isOpen, onClose, onSuccess }) {
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-      <Card className="w-full max-w-md">
+      <Card className="w-full max-w-md bg-white dark:bg-gray-900">
         <CardHeader>
           <div className="flex items-center justify-between">
-            <CardTitle>إضافة فئة جديدة</CardTitle>
+            <CardTitle className="text-gray-900 dark:text-white">إضافة فئة جديدة</CardTitle>
             <Button variant="ghost" size="sm" onClick={handleClose}>
               <X className="w-4 h-4" />
             </Button>

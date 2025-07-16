@@ -70,12 +70,24 @@ export function Sidebar({ activeItem, onItemClick }) {
     setIsOpen(!isOpen);
   };
 
+  // إغلاق الشريط الجانبي عند تغيير الحجم إلى الشاشة الكبيرة
+  React.useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth >= 768) {
+        setIsOpen(false);
+      }
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
   return (
     <>
       {/* زر القائمة للأجهزة المحمولة */}
       <button
         onClick={toggleSidebar}
-        className="fixed top-4 left-4 z-50 p-2 bg-blue-600 text-white rounded-lg shadow-lg md:hidden"
+        className="fixed top-4 left-4 z-50 p-2 bg-blue-600 dark:bg-blue-700 text-white rounded-lg shadow-lg md:hidden"
       >
         {isOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
       </button>

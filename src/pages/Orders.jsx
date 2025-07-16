@@ -92,10 +92,10 @@ export function Orders() {
 
     return (
       <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-        <Card className="w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+        <Card className="w-full max-w-2xl max-h-[90vh] overflow-y-auto bg-white dark:bg-gray-900">
           <CardHeader>
             <div className="flex items-center justify-between">
-              <CardTitle>تفاصيل الطلب #{selectedOrder.id?.slice(0, 8)}</CardTitle>
+              <CardTitle className="text-gray-900 dark:text-white">تفاصيل الطلب #{selectedOrder.id?.slice(0, 8)}</CardTitle>
               <Button variant="ghost" size="sm" onClick={() => setShowDetails(false)}>
                 <X className="w-4 h-4" />
               </Button>
@@ -104,19 +104,19 @@ export function Orders() {
           <CardContent className="space-y-4">
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <p className="font-medium text-gray-500">اسم العميل</p>
-                <p>{selectedOrder.customer_name || 'غير محدد'}</p>
+                <p className="font-medium text-gray-500 dark:text-gray-400">اسم العميل</p>
+                <p className="text-gray-900 dark:text-white">{selectedOrder.customer_name || 'غير محدد'}</p>
               </div>
               <div>
-                <p className="font-medium text-gray-500">رقم الهاتف</p>
-                <p>{selectedOrder.phone || 'غير محدد'}</p>
+                <p className="font-medium text-gray-500 dark:text-gray-400">رقم الهاتف</p>
+                <p className="text-gray-900 dark:text-white">{selectedOrder.phone || 'غير محدد'}</p>
               </div>
               <div>
-                <p className="font-medium text-gray-500">طريقة الدفع</p>
-                <p>{selectedOrder.payment_method || 'غير محدد'}</p>
+                <p className="font-medium text-gray-500 dark:text-gray-400">طريقة الدفع</p>
+                <p className="text-gray-900 dark:text-white">{selectedOrder.payment_method || 'غير محدد'}</p>
               </div>
               <div>
-                <p className="font-medium text-gray-500">الحالة</p>
+                <p className="font-medium text-gray-500 dark:text-gray-400">الحالة</p>
                 <Badge className={getStatusColor(selectedOrder.status)}>
                   {selectedOrder.status || 'pending'}
                 </Badge>
@@ -125,16 +125,16 @@ export function Orders() {
             
             {selectedOrder.address && (
               <div>
-                <p className="font-medium text-gray-500">عنوان التوصيل</p>
-                <p>{selectedOrder.address}</p>
+                <p className="font-medium text-gray-500 dark:text-gray-400">عنوان التوصيل</p>
+                <p className="text-gray-900 dark:text-white">{selectedOrder.address}</p>
               </div>
             )}
 
             <div>
-              <p className="font-medium text-gray-500 mb-2">عناصر الطلب</p>
+              <p className="font-medium text-gray-500 dark:text-gray-400 mb-2">عناصر الطلب</p>
               <div className="space-y-2">
                 {selectedOrder.order_items?.map((item, index) => (
-                  <div key={index} className="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg">
+                  <div key={index} className="flex items-center space-x-3 p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
                     {item.image_url && (
                       <img
                         src={item.image_url}
@@ -143,21 +143,21 @@ export function Orders() {
                       />
                     )}
                     <div className="flex-1">
-                      <p className="font-medium">{item.name}</p>
-                      <p className="text-sm text-gray-500">
+                      <p className="font-medium text-gray-900 dark:text-white">{item.name}</p>
+                      <p className="text-sm text-gray-500 dark:text-gray-400">
                         الكمية: {item.quantity} × {formatPrice(item.price)}
                       </p>
                     </div>
-                    <p className="font-medium">{formatPrice(item.quantity * item.price)}</p>
+                    <p className="font-medium text-gray-900 dark:text-white">{formatPrice(item.quantity * item.price)}</p>
                   </div>
                 ))}
               </div>
             </div>
 
-            <div className="border-t pt-4">
+            <div className="border-t border-gray-200 dark:border-gray-700 pt-4">
               <div className="flex justify-between items-center text-lg font-bold">
-                <span>المجموع الكلي:</span>
-                <span>{formatPrice(selectedOrder.total)}</span>
+                <span className="text-gray-900 dark:text-white">المجموع الكلي:</span>
+                <span className="text-gray-900 dark:text-white">{formatPrice(selectedOrder.total)}</span>
               </div>
             </div>
           </CardContent>
@@ -308,7 +308,7 @@ export function Orders() {
                       <select
                         value={order.status}
                         onChange={(e) => handleStatusUpdate(order.id, e.target.value)}
-                        className="px-2 py-1 border rounded text-sm"
+                        className="px-2 py-1 border border-gray-300 dark:border-gray-600 rounded text-sm bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
                       >
                         <option value="pending">قيد الانتظار</option>
                         <option value="processing">قيد المعالجة</option>
