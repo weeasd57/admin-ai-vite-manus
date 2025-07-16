@@ -104,7 +104,7 @@ export function Sidebar({ activeItem, onItemClick }) {
         "bg-white dark:bg-black border-r border-gray-200 dark:border-gray-700 h-screen flex flex-col transition-transform duration-300 ease-in-out",
         "md:w-64 md:relative md:translate-x-0", // شاشات كبيرة: عرض ثابت
         "fixed left-0 top-0 w-80 z-50", // شاشات صغيرة: موضع ثابت
-        isOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0" // إدارة الظهور
+        isOpen ? "translate-x-0" : "-translate-x-full"
       )}>
         {/* Logo */}
         <div className="p-6 border-b border-gray-200 dark:border-gray-700">

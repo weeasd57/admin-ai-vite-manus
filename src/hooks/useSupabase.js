@@ -289,6 +289,54 @@ export function useSupabase() {
     }
   };
 
+  const updateOrder = async (id, orderData) => {
+    try {
+      setLoading(true);
+      const { data, error } = await supabase
+        .from('orders')
+        .update(orderData)
+        .eq('id', id)
+        .select();
+      
+      if (error) throw error;
+      return data[0];
+    } catch (error) {
+      console.error('Error updating order:', error);
+      throw error;
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const deleteOrder = async (id) => {
+    try {
+      setLoading(true);
+      
+      // Delete order items first (due to foreign key constraint)
+      const { error: itemsError } = await supabase
+        .from('order_items')
+        .delete()
+        .eq('order_id', id);
+      
+      if (itemsError) throw itemsError;
+      
+      // Delete the order
+      const { error } = await supabase
+        .from('orders')
+        .delete()
+        .eq('id', id);
+      
+      if (error) throw error;
+      
+      return true;
+    } catch (error) {
+      console.error('Error deleting order:', error);
+      throw error;
+    } finally {
+      setLoading(false);
+    }
+  };
+
   // Users
   const getUsers = async () => {
     try {
@@ -434,6 +482,8 @@ export function useSupabase() {
     deleteProduct,
     getProductById,
     getOrders,
+    updateOrder,
+    deleteOrder,
     getUsers,
     getAppSettings,
     updateAppSettings,
