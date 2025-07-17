@@ -107,33 +107,13 @@ export function Sidebar({ activeItem, onItemClick }) {
 
   return (
     <>
-      {/* Mobile menu button */}
-      <button
-        onClick={toggleSidebar}
-        data-menu-button
-        className="fixed top-4 left-4 z-50 p-2 bg-blue-600 dark:bg-blue-700 text-white rounded-lg shadow-lg md:hidden"
-      >
-        {isOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-      </button>
-
-      {/* Mobile overlay */}
-      {isOpen && (
-        <div
-          className="fixed inset-0 bg-black bg-opacity-50 z-40 md:hidden"
-          onClick={() => setIsOpen(false)}
-        />
-      )}
-
+      {/* Sidebar - hidden on mobile, visible on desktop */}
       <div 
         data-sidebar-main
         className={cn(
-          "bg-white dark:bg-black border-r border-gray-200 dark:border-gray-700 h-screen flex flex-col transition-transform duration-300 ease-in-out",
-          "md:w-64 md:relative md:translate-x-0", // Desktop: fixed width and always visible
-          "fixed left-0 top-0 w-80 z-50", // Mobile: fixed position
-          // Mobile visibility control
-          isMobile ? 
-            (isOpen ? "translate-x-0" : "-translate-x-full") : 
-            "translate-x-0" // Always visible on desktop
+          "bg-white dark:bg-black border-r border-gray-200 dark:border-gray-700 h-screen flex flex-col",
+          "w-64 relative translate-x-0", // Desktop: fixed width and always visible
+          "hidden md:flex" // Hidden on mobile, visible on desktop
         )}
       >
         {/* Logo */}

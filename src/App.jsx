@@ -2,6 +2,8 @@ import React from 'react';
 import { Routes, Route } from 'react-router-dom';
 import { ThemeProvider } from 'next-themes';
 import { Sidebar } from './components/Sidebar';
+import { BottomNavBar } from './components/BottomNavBar';
+import { TopBar } from './components/TopBar';
 import { Dashboard } from './pages/Dashboard';
 import { Products } from './pages/Products';
 import { Orders } from './pages/Orders';
@@ -15,8 +17,9 @@ function App() {
     <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
       <div className="flex h-screen bg-gray-50 dark:bg-black">
         <Sidebar />
-        <main className="flex-1 overflow-auto md:ml-0">
-          <div className="pt-16 md:pt-0"> {/* Add padding top for mobile to avoid menu button overlap */}
+        <TopBar />
+        <main className="flex-1 overflow-auto">
+          <div className="pt-14 pb-16 md:pt-0 md:pb-0"> {/* Add padding for mobile top and bottom bars */}
             <Routes>
               <Route path="/" element={<Dashboard />} />
               <Route path="/categories" element={<Categories />} />
@@ -27,6 +30,7 @@ function App() {
             </Routes>
           </div>
         </main>
+        <BottomNavBar />
       </div>
     </ThemeProvider>
   );
