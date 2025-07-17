@@ -105,7 +105,7 @@ export function EditCategoryModal({ isOpen, onClose, categoryId, onSuccess }) {
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div className="bg-white dark:bg-gray-900 rounded-lg p-6 w-full max-w-md max-h-[90vh] overflow-y-auto">
+      <div className="bg-white dark:bg-black rounded-lg p-6 w-full max-w-md max-h-[90vh] overflow-y-auto border dark:border-gray-700">
         {/* Header */}
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-xl font-bold text-gray-900 dark:text-white">Edit Category</h2>

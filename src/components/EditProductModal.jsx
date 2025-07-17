@@ -157,7 +157,7 @@ export function EditProductModal({ isOpen, onClose, productId, onSuccess }) {
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div className="bg-white dark:bg-gray-900 rounded-lg p-6 w-full max-w-md max-h-[90vh] overflow-y-auto">
+      <div className="bg-white dark:bg-black rounded-lg p-6 w-full max-w-md max-h-[90vh] overflow-y-auto border dark:border-gray-700">
         {/* Header */}
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-xl font-bold text-gray-900 dark:text-white">Edit Product</h2>
@@ -223,7 +223,7 @@ export function EditProductModal({ isOpen, onClose, productId, onSuccess }) {
                 name="category_id"
                 value={formData.category_id}
                 onChange={handleInputChange}
-                className="flex h-10 w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 px-3 py-2 text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 disabled:cursor-not-allowed disabled:opacity-50"
+                className="flex h-10 w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-black px-3 py-2 text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 disabled:cursor-not-allowed disabled:opacity-50"
               >
                 <option value="">Select a category</option>
                 {categories.map((category) => (

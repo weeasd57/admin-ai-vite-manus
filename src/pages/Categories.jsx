@@ -156,7 +156,7 @@ export function Categories() {
 
       {/* Delete Confirmation Dialog */}
       <AlertDialog open={!!deleteTarget} onOpenChange={() => setDeleteTarget(null)}>
-        <AlertDialogContent className="bg-white dark:bg-gray-800 rounded-lg p-6 w-full max-w-sm">
+        <AlertDialogContent className="bg-white dark:bg-black rounded-lg p-6 w-full max-w-sm border dark:border-gray-700">
           <AlertDialogHeader>
             <AlertDialogTitle className="text-gray-900 dark:text-white">Delete Category</AlertDialogTitle>
             <AlertDialogDescription className="text-gray-600 dark:text-gray-300">
