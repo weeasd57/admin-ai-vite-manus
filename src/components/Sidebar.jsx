@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { 
-  LayoutDashboard, 
-  Package, 
-  ShoppingCart, 
-  Users, 
-  Settings, 
+import {
+  LayoutDashboard,
+  Package,
+  ShoppingCart,
+  Users,
+  Settings,
   FolderOpen,
   Menu,
   X
@@ -59,19 +59,17 @@ export function Sidebar({ activeItem, onItemClick }) {
   const handleItemClick = (id, path) => {
     if (typeof onItemClick === 'function') {
       onItemClick(id);
-    } else {
-      navigate(path);
     }
-    // إغلاق الشريط الجانبي في الأجهزة المحمولة بعد النقر على عنصر
-    setIsOpen(false);
+    navigate(path);
+    setIsOpen(false); // Close sidebar on item click for mobile
   };
 
   const toggleSidebar = () => {
     setIsOpen(!isOpen);
   };
 
-  // إغلاق الشريط الجانبي عند تغيير الحجم إلى الشاشة الكبيرة
-  React.useEffect(() => {
+  // Close sidebar when resizing to desktop view
+  useEffect(() => {
     const handleResize = () => {
       if (window.innerWidth >= 768) {
         setIsOpen(false);
@@ -84,7 +82,7 @@ export function Sidebar({ activeItem, onItemClick }) {
 
   return (
     <>
-      {/* زر القائمة للأجهزة المحمولة */}
+      {/* Mobile menu button */}
       <button
         onClick={toggleSidebar}
         className="fixed top-4 left-4 z-50 p-2 bg-blue-600 dark:bg-blue-700 text-white rounded-lg shadow-lg md:hidden"
@@ -92,7 +90,7 @@ export function Sidebar({ activeItem, onItemClick }) {
         {isOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
       </button>
 
-      {/* غطاء الخلفية للأجهزة المحمولة */}
+      {/* Mobile overlay */}
       {isOpen && (
         <div
           className="fixed inset-0 bg-black bg-opacity-50 z-40 md:hidden"
@@ -102,9 +100,9 @@ export function Sidebar({ activeItem, onItemClick }) {
 
       <div className={cn(
         "bg-white dark:bg-black border-r border-gray-200 dark:border-gray-700 h-screen flex flex-col transition-transform duration-300 ease-in-out",
-        "md:w-64 md:relative md:translate-x-0", // شاشات كبيرة: عرض ثابت
-        "fixed left-0 top-0 w-80 z-50", // شاشات صغيرة: موضع ثابت
-        isOpen ? "translate-x-0" : "-translate-x-full"
+        "md:w-64 md:relative md:translate-x-0", // Desktop: fixed width
+        "fixed left-0 top-0 w-80 z-50", // Mobile: fixed position
+        isOpen ? "translate-x-0" : "-translate-x-full" // Control visibility
       )}>
         {/* Logo */}
         <div className="p-6 border-b border-gray-200 dark:border-gray-700">
@@ -115,12 +113,11 @@ export function Sidebar({ activeItem, onItemClick }) {
               </div>
               <span className="text-xl font-bold text-gray-900 dark:text-white">Admin AI</span>
             </div>
-            
-            {/* زر إلغاء للأجهزة المحمولة */}
+            {/* Close button for mobile */}
             <button
               onClick={toggleSidebar}
               className="md:hidden p-2 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors"
-              aria-label="إغلاق الشريط الجانبي"
+              aria-label="Close Sidebar"
             >
               <X className="w-5 h-5" />
             </button>
@@ -132,7 +129,6 @@ export function Sidebar({ activeItem, onItemClick }) {
           <ul className="space-y-2">
             {sidebarItems.map((item) => {
               const Icon = item.icon;
-              // إصلاح منطق تحديد العنصر النشط
               const isActive = activeItem ? 
                 activeItem === item.id : 
                 (item.path === '/' ? location.pathname === '/' : location.pathname.startsWith(item.path));
@@ -160,4 +156,5 @@ export function Sidebar({ activeItem, onItemClick }) {
     </>
   );
 }
+
 

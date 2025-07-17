@@ -342,15 +342,33 @@ export function useSupabase() {
     try {
       setLoading(true);
       const { data, error } = await supabase
-        .from('users')
-        .select('*')
-        .order('created_at', { ascending: false });
-      
+        .from("users")
+        .select("*")
+        .order("created_at", { ascending: false });
+
       if (error) throw error;
       return data;
     } catch (error) {
-      console.error('Error fetching users:', error);
+      console.error("Error fetching users:", error);
       return null;
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const deleteUser = async (id) => {
+    try {
+      setLoading(true);
+      const { error } = await supabase
+        .from("users")
+        .delete()
+        .eq("id", id);
+
+      if (error) throw error;
+      return true;
+    } catch (error) {
+      console.error("Error deleting user:", error);
+      throw error;
     } finally {
       setLoading(false);
     }
@@ -485,6 +503,7 @@ export function useSupabase() {
     updateOrder,
     deleteOrder,
     getUsers,
+    deleteUser,
     getAppSettings,
     updateAppSettings,
     uploadImage,
