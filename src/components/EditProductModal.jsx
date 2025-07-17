@@ -7,6 +7,7 @@ import { Checkbox } from './ui/checkbox';
 import { Upload, Loader2, X } from 'lucide-react';
 import { toast } from 'sonner';
 import { useSupabase } from '../hooks/useSupabase';
+import { parsePrice, isValidPrice, toDatabasePrice } from '../utils/priceUtils';
 
 export function EditProductModal({ isOpen, onClose, productId, onSuccess }) {
   const { getProductById, updateProduct, uploadImage, getCategories } = useSupabase();
@@ -111,6 +112,16 @@ export function EditProductModal({ isOpen, onClose, productId, onSuccess }) {
       toast.error('Product name is required');
       return;
     }
+    
+    if (!isValidPrice(formData.price)) {
+      toast.error('Please enter a valid price');
+      return;
+    }
+    
+    if (formData.sale_price && !isValidPrice(formData.sale_price)) {
+      toast.error('Please enter a valid sale price');
+      return;
+    }
 
     try {
       setSaving(true);
@@ -118,8 +129,8 @@ export function EditProductModal({ isOpen, onClose, productId, onSuccess }) {
       const cleanedData = {
         ...formData,
         category_id: formData.category_id && formData.category_id.trim() !== '' ? formData.category_id : null,
-        price: formData.price ? parseFloat(formData.price) : 0,
-        sale_price: formData.sale_price ? parseFloat(formData.sale_price) : null
+        price: parsePrice(formData.price),
+        sale_price: toDatabasePrice(formData.sale_price)
       };
       
       await updateProduct(productId, cleanedData);

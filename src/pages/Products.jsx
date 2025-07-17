@@ -18,6 +18,7 @@ import { toast } from 'sonner';
 import { useSupabase } from '../hooks/useSupabase';
 import { AddProductModal } from '../components/AddProductModal';
 import { EditProductModal } from '../components/EditProductModal';
+import { formatPrice } from '../utils/priceUtils';
 
 export function Products() {
   const navigate = useNavigate();
@@ -46,8 +47,8 @@ export function Products() {
     loadProducts(); // Reload products after adding new one
   };
 
-  const formatPrice = (price) => {
-    return `$${parseFloat(price || 0).toFixed(2)}`;
+  const formatPriceDisplay = (price) => {
+    return formatPrice(price, 'USD');
   };
 
   const formatDate = (dateString) => {
@@ -136,11 +137,11 @@ export function Products() {
                 <div className="flex items-center justify-between">
                   <div>
                     <span className="text-lg font-bold text-gray-900 dark:text-white">
-                      {formatPrice(product.price)}
+                      {formatPriceDisplay(product.price)}
                     </span>
                     {product.on_sale && product.sale_price && (
                       <span className="text-sm text-green-600 dark:text-green-400 ml-2">
-                        Sale: {formatPrice(product.sale_price)}
+                        Sale: {formatPriceDisplay(product.sale_price)}
                       </span>
                     )}
                   </div>

@@ -8,6 +8,7 @@ import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
 import { X, Save, Upload } from 'lucide-react';
 import { useSupabase } from '../hooks/useSupabase';
 import { toast } from 'sonner';
+import { parsePrice, isValidPrice, toDatabasePrice } from '../utils/priceUtils';
 
 export function AddProductModal({ isOpen, onClose, onSuccess }) {
   const [formData, setFormData] = useState({
@@ -65,8 +66,14 @@ export function AddProductModal({ isOpen, onClose, onSuccess }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!formData.name.trim() || !formData.price) {
-      toast.error('يرجى إدخال اسم المنتج والسعر');
+    if (!formData.name.trim() || !isValidPrice(formData.price)) {
+      toast.error('يرجى إدخال اسم المنتج والسعر الصحيح');
+      return;
+    }
+    
+    // التحقق من صحة سعر التخفيض إذا كان موجوداً
+    if (formData.sale_price && !isValidPrice(formData.sale_price)) {
+      toast.error('يرجى إدخال سعر تخفيض صحيح');
       return;
     }
 
@@ -85,8 +92,8 @@ export function AddProductModal({ isOpen, onClose, onSuccess }) {
       const productData = {
         name: formData.name.trim(),
         description: formData.description.trim(),
-        price: parseFloat(formData.price),
-        sale_price: formData.sale_price ? parseFloat(formData.sale_price) : null,
+        price: parsePrice(formData.price),
+        sale_price: toDatabasePrice(formData.sale_price),
         category_id: formData.category_id && formData.category_id.trim() !== '' ? formData.category_id : null,
         is_hot: formData.is_hot,
         is_new: formData.is_new,
