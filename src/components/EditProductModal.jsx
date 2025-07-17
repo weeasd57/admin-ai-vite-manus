@@ -114,7 +114,15 @@ export function EditProductModal({ isOpen, onClose, productId, onSuccess }) {
 
     try {
       setSaving(true);
-      await updateProduct(productId, formData);
+      // تنظيف البيانات قبل الإرسال
+      const cleanedData = {
+        ...formData,
+        category_id: formData.category_id && formData.category_id.trim() !== '' ? formData.category_id : null,
+        price: formData.price ? parseFloat(formData.price) : 0,
+        sale_price: formData.sale_price ? parseFloat(formData.sale_price) : null
+      };
+      
+      await updateProduct(productId, cleanedData);
       toast.success('Product updated successfully');
       onSuccess();
       onClose();

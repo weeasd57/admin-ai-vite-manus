@@ -87,7 +87,7 @@ export function AddProductModal({ isOpen, onClose, onSuccess }) {
         description: formData.description.trim(),
         price: parseFloat(formData.price),
         sale_price: formData.sale_price ? parseFloat(formData.sale_price) : null,
-        category_id: formData.category_id || null,
+        category_id: formData.category_id && formData.category_id.trim() !== '' ? formData.category_id : null,
         is_hot: formData.is_hot,
         is_new: formData.is_new,
         on_sale: formData.on_sale,

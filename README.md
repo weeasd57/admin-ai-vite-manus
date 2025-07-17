@@ -165,6 +165,39 @@ pnpm run preview
 
 هذا المشروع مرخص تحت رخصة MIT - انظر ملف [LICENSE](LICENSE) للتفاصيل.
 
+## الأخطاء الشائعة وحلولها
+
+### خطأ UUID الفارغ
+```
+"code": "22P02",
+"message": "invalid input syntax for type uuid: """
+```
+
+**السبب:** إرسال سلسلة نصية فارغة `""` لحقل UUID بدلاً من `null`.
+
+**الحل:** تم إصلاح هذه المشكلة في المكونات التالية:
+- `AddProductModal.jsx` - السطر 90
+- `EditProductModal.jsx` - السطر 120
+
+الكود المُحدث:
+```javascript
+category_id: formData.category_id && formData.category_id.trim() !== '' ? formData.category_id : null
+```
+
+### مشاكل رفع الصور
+- تأكد من إعداد bucket `images` في Supabase
+- تفعيل السياسات المناسبة للقراءة والكتابة والحذف
+- التأكد من صحة معلومات التكوين في Supabase
+
+### مشاكل المصادقة
+- تأكد من تفعيل Email/Password في Firebase Authentication
+- التحقق من صحة معلومات Firebase في `firebase.js`
+
+### مشاكل قاعدة البيانات
+- تأكد من إنشاء جميع الجداول المطلوبة حسب `SETUP_GUIDE.md`
+- التحقق من صحة العلاقات بين الجداول (Foreign Keys)
+- التأكد من إعداد Row Level Security إذا لزم الأمر
+
 ## الدعم
 
 إذا واجهت أي مشاكل أو لديك أسئلة، يرجى فتح issue في المستودع.
