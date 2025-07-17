@@ -55,6 +55,7 @@ export function Sidebar({ activeItem, onItemClick }) {
   const navigate = useNavigate();
   const location = useLocation();
   const [isOpen, setIsOpen] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
 
   const handleItemClick = (id, path) => {
     if (typeof onItemClick === 'function') {
@@ -68,23 +69,48 @@ export function Sidebar({ activeItem, onItemClick }) {
     setIsOpen(!isOpen);
   };
 
-  // Close sidebar when resizing to desktop view
+  // Handle mobile detection and sidebar state
   useEffect(() => {
     const handleResize = () => {
-      if (window.innerWidth >= 768) {
-        setIsOpen(false);
+      const mobile = window.innerWidth < 768;
+      setIsMobile(mobile);
+      
+      if (!mobile) {
+        setIsOpen(false); // Close sidebar when switching to desktop
       }
     };
 
+    // Initial check
+    handleResize();
+    
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
   }, []);
+
+  // Close sidebar when clicking outside on mobile
+  useEffect(() => {
+    const handleOutsideClick = (event) => {
+      if (isOpen && isMobile) {
+        const sidebar = document.querySelector('[data-sidebar-main]');
+        const menuButton = document.querySelector('[data-menu-button]');
+        
+        if (sidebar && !sidebar.contains(event.target) && 
+            menuButton && !menuButton.contains(event.target)) {
+          setIsOpen(false);
+        }
+      }
+    };
+
+    document.addEventListener('mousedown', handleOutsideClick);
+    return () => document.removeEventListener('mousedown', handleOutsideClick);
+  }, [isOpen, isMobile]);
 
   return (
     <>
       {/* Mobile menu button */}
       <button
         onClick={toggleSidebar}
+        data-menu-button
         className="fixed top-4 left-4 z-50 p-2 bg-blue-600 dark:bg-blue-700 text-white rounded-lg shadow-lg md:hidden"
       >
         {isOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
@@ -98,12 +124,18 @@ export function Sidebar({ activeItem, onItemClick }) {
         />
       )}
 
-      <div className={cn(
-        "bg-white dark:bg-black border-r border-gray-200 dark:border-gray-700 h-screen flex flex-col transition-transform duration-300 ease-in-out",
-        "md:w-64 md:relative md:translate-x-0", // Desktop: fixed width
-        "fixed left-0 top-0 w-80 z-50", // Mobile: fixed position
-        isOpen ? "translate-x-0" : "-translate-x-full" // Control visibility
-      )}>
+      <div 
+        data-sidebar-main
+        className={cn(
+          "bg-white dark:bg-black border-r border-gray-200 dark:border-gray-700 h-screen flex flex-col transition-transform duration-300 ease-in-out",
+          "md:w-64 md:relative md:translate-x-0", // Desktop: fixed width and always visible
+          "fixed left-0 top-0 w-80 z-50", // Mobile: fixed position
+          // Mobile visibility control
+          isMobile ? 
+            (isOpen ? "translate-x-0" : "-translate-x-full") : 
+            "translate-x-0" // Always visible on desktop
+        )}
+      >
         {/* Logo */}
         <div className="p-6 border-b border-gray-200 dark:border-gray-700">
           <div className="flex items-center justify-between">

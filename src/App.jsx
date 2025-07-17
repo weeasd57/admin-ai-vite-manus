@@ -15,15 +15,17 @@ function App() {
     <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
       <div className="flex h-screen bg-gray-50 dark:bg-black">
         <Sidebar />
-        <main className="flex-1 overflow-auto">
-          <Routes>
-            <Route path="/" element={<Dashboard />} />
-            <Route path="/categories" element={<Categories />} />
-            <Route path="/products" element={<Products />} />
-            <Route path="/orders" element={<Orders />} />
-            <Route path="/users" element={<Users />} />
-            <Route path="/settings" element={<Settings />} />
-          </Routes>
+        <main className="flex-1 overflow-auto md:ml-0">
+          <div className="pt-16 md:pt-0"> {/* Add padding top for mobile to avoid menu button overlap */}
+            <Routes>
+              <Route path="/" element={<Dashboard />} />
+              <Route path="/categories" element={<Categories />} />
+              <Route path="/products" element={<Products />} />
+              <Route path="/orders" element={<Orders />} />
+              <Route path="/users" element={<Users />} />
+              <Route path="/settings" element={<Settings />} />
+            </Routes>
+          </div>
         </main>
       </div>
     </ThemeProvider>
