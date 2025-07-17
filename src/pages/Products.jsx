@@ -197,11 +197,11 @@ export function Products() {
 
       {/* Delete Confirmation Dialog */}
       <AlertDialog open={!!deleteTarget} onOpenChange={() => setDeleteTarget(null)}>
-        <AlertDialogContent className="bg-white rounded-lg p-6 w-full max-w-sm">
+        <AlertDialogContent className="bg-white dark:bg-gray-800 rounded-lg p-6 w-full max-w-sm">
           <AlertDialogHeader>
-            <AlertDialogTitle>Delete Product</AlertDialogTitle>
-            <AlertDialogDescription>
-              Are you sure you want to delete <strong>{deleteTarget?.name}</strong>? This action cannot be undone.
+            <AlertDialogTitle className="text-gray-900 dark:text-white">Delete Product</AlertDialogTitle>
+            <AlertDialogDescription className="text-gray-600 dark:text-gray-300">
+              Are you sure you want to delete <strong className="text-gray-900 dark:text-white">{deleteTarget?.name}</strong>? This action cannot be undone.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter className="flex justify-end space-x-2 mt-4">

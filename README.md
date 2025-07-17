@@ -184,6 +184,26 @@ pnpm run preview
 category_id: formData.category_id && formData.category_id.trim() !== '' ? formData.category_id : null
 ```
 
+### مشكلة مربعات الحوار لا تستجيب للثيم المظلم
+```
+مربعات الحوار للحذف تظهر بخلفية بيضاء حتى في الوضع المظلم
+```
+
+**السبب:** تم تحديد `className="bg-white"` بشكل صريح في AlertDialogContent.
+
+**الحل:** تم إصلاح هذه المشكلة في الصفحات التالية:
+- `Categories.jsx` - السطر 159
+- `Products.jsx` - السطر 200
+
+الكود المُحدث:
+```javascript
+<AlertDialogContent className="bg-white dark:bg-gray-800 rounded-lg p-6 w-full max-w-sm">
+  <AlertDialogTitle className="text-gray-900 dark:text-white">Delete Item</AlertDialogTitle>
+  <AlertDialogDescription className="text-gray-600 dark:text-gray-300">
+    Are you sure you want to delete <strong className="text-gray-900 dark:text-white">{item?.name}</strong>?
+  </AlertDialogDescription>
+```
+
 ### مشاكل رفع الصور
 - تأكد من إعداد bucket `images` في Supabase
 - تفعيل السياسات المناسبة للقراءة والكتابة والحذف
