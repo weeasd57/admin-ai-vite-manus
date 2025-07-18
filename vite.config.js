@@ -24,7 +24,7 @@ export default defineConfig({
     fs: {
       strict: false,
     },
-    allowedHosts: ['5173-ik5o7u2gb83mvj5mnq0ad-780ff297.manusvm.computer'],
+    allowedHosts: 'all',
   },
 })
 

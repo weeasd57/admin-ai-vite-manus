@@ -24,6 +24,12 @@ const bottomNavItems = [
     path: '/products'
   },
   {
+    id: 'categories',
+    label: 'Categories',
+    icon: FolderOpen,
+    path: '/categories'
+  },
+  {
     id: 'orders',
     label: 'Orders',
     icon: ShoppingCart,
@@ -53,7 +59,7 @@ export function BottomNavBar() {
 
   return (
     <div className="fixed bottom-0 left-0 right-0 bg-white/95 dark:bg-gray-900/95 backdrop-blur-md border-t border-gray-200 dark:border-gray-700 md:hidden z-50 shadow-lg">
-      <div className="grid grid-cols-5 h-16 safe-area-inset-bottom">
+      <div className="grid grid-cols-6 h-16 safe-area-inset-bottom">
         {bottomNavItems.map((item) => {
           const Icon = item.icon;
           const isActive = item.path === '/' 
