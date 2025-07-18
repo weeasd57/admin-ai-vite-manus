@@ -1,0 +1,220 @@
+/* Mobile-specific responsive improvements */
+
+/* Prevent horizontal scrolling on mobile */
+@media (max-width: 640px) {
+  body {
+    overflow-x: hidden;
+  }
+  
+  /* Ensure all containers are properly sized */
+  .container {
+    width: 100%;
+    max-width: 100vw;
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+  
+  /* Improve card appearance on mobile */
+  .card {
+    margin-bottom: 1rem;
+    border-radius: 0.75rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* Better button sizes for touch */
+  .btn {
+    min-height: 44px;
+    padding: 12px 16px;
+    font-size: 14px;
+  }
+  
+  /* Improve modal appearance */
+  .modal {
+    margin: 0.5rem;
+    max-height: 95vh;
+    border-radius: 1rem;
+  }
+  
+  /* Better input fields */
+  .input {
+    min-height: 44px;
+    padding: 12px 16px;
+    font-size: 16px; /* Prevents zoom on iOS */
+  }
+  
+  /* Improve table responsiveness */
+  .table-responsive {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  
+  /* Better spacing for lists */
+  .list-item {
+    padding: 1rem;
+    border-bottom: 1px solid #e5e7eb;
+  }
+  
+  /* Improve text readability */
+  .text-responsive {
+    font-size: 14px;
+    line-height: 1.5;
+  }
+  
+  /* Better image handling */
+  .image-responsive {
+    max-width: 100%;
+    height: auto;
+    border-radius: 0.5rem;
+  }
+  
+  /* Stack elements on mobile */
+  .stack-mobile {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  
+  /* Hide less important elements on mobile */
+  .mobile-hidden {
+    display: none;
+  }
+  
+  /* Show mobile-only elements */
+  .mobile-only {
+    display: block;
+  }
+  
+  /* Better grid layouts */
+  .grid-mobile {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+  
+  /* Improve form layouts */
+  .form-group {
+    margin-bottom: 1rem;
+  }
+  
+  .form-label {
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+  }
+  
+  /* Better navigation */
+  .nav-mobile {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: white;
+    padding: 1rem;
+    box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+  }
+  
+  /* Improve status badges */
+  .badge-mobile {
+    padding: 0.25rem 0.5rem;
+    font-size: 12px;
+    border-radius: 0.375rem;
+  }
+  
+  /* Better loading states */
+  .loading-mobile {
+    padding: 2rem;
+    text-align: center;
+  }
+  
+  /* Improve error states */
+  .error-mobile {
+    padding: 1rem;
+    background: #fee2e2;
+    border: 1px solid #fecaca;
+    border-radius: 0.5rem;
+    color: #dc2626;
+    font-size: 14px;
+  }
+  
+  /* Better success states */
+  .success-mobile {
+    padding: 1rem;
+    background: #dcfce7;
+    border: 1px solid #bbf7d0;
+    border-radius: 0.5rem;
+    color: #166534;
+    font-size: 14px;
+  }
+}
+
+/* Tablet-specific improvements */
+@media (min-width: 641px) and (max-width: 1024px) {
+  .mobile-only {
+    display: none;
+  }
+  
+  .tablet-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+  }
+}
+
+/* Desktop improvements */
+@media (min-width: 1025px) {
+  .mobile-only {
+    display: none;
+  }
+  
+  .mobile-hidden {
+    display: block;
+  }
+  
+  .desktop-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
+  }
+}
+
+/* Dark mode improvements */
+@media (prefers-color-scheme: dark) {
+  .nav-mobile {
+    background: #1f2937;
+    border-top: 1px solid #374151;
+  }
+  
+  .card {
+    background: #1f2937;
+    border: 1px solid #374151;
+  }
+  
+  .error-mobile {
+    background: #7f1d1d;
+    border-color: #991b1b;
+    color: #fca5a5;
+  }
+  
+  .success-mobile {
+    background: #14532d;
+    border-color: #166534;
+    color: #86efac;
+  }
+}
+
+/* Accessibility improvements */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* High contrast mode */
+@media (prefers-contrast: high) {
+  .card {
+    border: 2px solid currentColor;
+  }
+  
+  .btn {
+    border: 2px solid currentColor;
+  }
+}

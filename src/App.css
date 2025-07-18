@@ -1,5 +1,6 @@
 @import "tailwindcss";
 @import "tw-animate-css";
+@import "./mobile-responsive.css";
 
 @custom-variant dark (&:is(.dark *));
 
@@ -116,5 +117,52 @@
   }
   body {
     @apply bg-background text-foreground;
+  }
+}
+
+/* Responsive design improvements */
+@media (max-width: 640px) {
+  .flex {
+    flex-wrap: wrap;
+  }
+  .h-screen {
+    height: auto;
+    min-height: 100vh;
+  }
+  .overflow-auto {
+    max-height: 100vh;
+    overflow-y: auto;
+  }
+  .bg-gray-50 {
+    @apply bg-white;
+  }
+  .items-center {
+    align-items: stretch;
+  }
+  .text-3xl {
+    @apply text-xl;
+  }
+  .space-y-2 > :not([hidden]) ~ :not([hidden]) {
+    --tw-space-y-reverse: 0;
+    margin-top: calc(0.5rem * calc(1 - var(--tw-space-y-reverse)));
+    margin-bottom: calc(0.5rem * var(--tw-space-y-reverse));
+  }
+  /* Cards adjustments */
+  .card {
+    @apply rounded-lg;
+  }
+  /* Modals and Popups */
+  .modal {
+    @apply p-4;
+  }
+  .button {
+    @apply px-4 py-2 text-sm;
+  }
+  /* Text adjustments for readability */
+  .text-lg {
+    @apply text-base;
+  }
+  .text-xl {
+    @apply text-lg;
   }
 }

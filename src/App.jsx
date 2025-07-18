@@ -15,11 +15,11 @@ import './App.css';
 function App() {
   return (
     <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-      <div className="flex h-screen bg-gray-50 dark:bg-black">
+      <div className="flex h-screen bg-gray-50 dark:bg-black overflow-hidden">
         <Sidebar />
         <TopBar />
-        <main className="flex-1 overflow-auto">
-          <div className="pt-14 pb-16 md:pt-0 md:pb-0"> {/* Add padding for mobile top and bottom bars */}
+        <main className="flex-1 overflow-auto w-full">
+          <div className="pt-14 pb-20 md:pt-0 md:pb-0 min-h-full"> {/* Add padding for mobile top and bottom bars */}
             <Routes>
               <Route path="/" element={<Dashboard />} />
               <Route path="/categories" element={<Categories />} />
