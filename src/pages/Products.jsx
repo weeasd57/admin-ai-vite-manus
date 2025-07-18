@@ -75,15 +75,15 @@ export function Products() {
   }
 
   return (
-    <div className="p-6 space-y-6">
+    <div className="p-3 sm:p-6 space-y-4 sm:space-y-6">
       {/* Header */}
-      <div className="flex justify-between items-center">
+      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Products</h1>
-          <p className="text-gray-600 dark:text-gray-300 mt-2">Manage your product inventory</p>
+          <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900 dark:text-white">Products</h1>
+          <p className="text-sm sm:text-base text-gray-600 dark:text-gray-300 mt-1 sm:mt-2">Manage your product inventory</p>
         </div>
         <Button 
-          className="flex items-center space-x-2"
+          className="flex items-center justify-center space-x-2 w-full sm:w-auto touch-target"
           onClick={() => setShowAddModal(true)}
         >
           <Plus className="w-4 h-4" />
@@ -94,14 +94,14 @@ export function Products() {
       {/* Products Grid */}
       {products.length === 0 ? (
         <Card>
-          <CardContent className="flex flex-col items-center justify-center py-12">
-            <Package className="w-12 h-12 text-gray-400 mb-4" />
-            <h3 className="text-lg font-medium text-gray-900 mb-2">No products found</h3>
-            <p className="text-gray-500 text-center mb-4">
+          <CardContent className="flex flex-col items-center justify-center py-8 sm:py-12">
+            <Package className="w-10 h-10 sm:w-12 sm:h-12 text-gray-400 mb-4" />
+            <h3 className="text-base sm:text-lg font-medium text-gray-900 dark:text-gray-100 mb-2 text-center">No products found</h3>
+            <p className="text-sm sm:text-base text-gray-500 dark:text-gray-400 text-center mb-4 px-4">
               Get started by adding your first product to the inventory.
             </p>
             <Button 
-              className="flex items-center space-x-2"
+              className="flex items-center space-x-2 touch-target"
               onClick={() => setShowAddModal(true)}
             >
               <Plus className="w-4 h-4" />
@@ -110,11 +110,11 @@ export function Products() {
           </CardContent>
         </Card>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
           {products.map((product) => (
             <Card key={product.id} className="hover:shadow-lg transition-shadow">
-              <CardHeader className="pb-3">
-                <div className="aspect-square bg-gray-100 rounded-lg mb-3 overflow-hidden">
+              <CardHeader className="pb-3 p-3 sm:p-4">
+                <div className="aspect-square bg-gray-100 dark:bg-gray-700 rounded-lg mb-3 overflow-hidden">
                   {product.image_urls && product.image_urls.length > 0 ? (
                     <img
                       src={product.image_urls[0]}
@@ -123,29 +123,29 @@ export function Products() {
                     />
                   ) : (
                     <div className="w-full h-full flex items-center justify-center">
-                      <Package className="w-12 h-12 text-gray-400" />
+                      <Package className="w-8 h-8 sm:w-12 sm:h-12 text-gray-400" />
                     </div>
                   )}
                 </div>
-                <CardTitle className="text-lg">{product.name}</CardTitle>
+                <CardTitle className="text-base sm:text-lg">{product.name}</CardTitle>
               </CardHeader>
-              <CardContent className="space-y-3">
-                <p className="text-sm text-gray-600 dark:text-gray-300 line-clamp-2">
+              <CardContent className="space-y-3 p-3 sm:p-4">
+                <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-300 line-clamp-2">
                   {product.description}
                 </p>
                 
-                <div className="flex items-center justify-between">
-                  <div>
-                    <span className="text-lg font-bold text-gray-900 dark:text-white">
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+                  <div className="flex flex-col">
+                    <span className="text-base sm:text-lg font-bold text-gray-900 dark:text-white">
                       {formatPriceDisplay(product.price)}
                     </span>
                     {product.on_sale && product.sale_price && (
-                      <span className="text-sm text-green-600 dark:text-green-400 ml-2">
+                      <span className="text-xs sm:text-sm text-green-600 dark:text-green-400">
                         Sale: {formatPriceDisplay(product.sale_price)}
                       </span>
                     )}
                   </div>
-                  <div className="flex space-x-1">
+                  <div className="flex flex-wrap gap-1">
                     {product.is_hot && (
                       <Badge variant="destructive" className="text-xs">Hot</Badge>
                     )}
@@ -166,12 +166,11 @@ export function Products() {
                   Created: {formatDate(product.created_at)}
                 </div>
 
-                <div className="flex space-x-2 pt-2">
-                  
+                <div className="flex flex-col sm:flex-row gap-2 pt-2">
                   <Button 
                     variant="outline" 
                     size="sm" 
-                    className="flex-1"
+                    className="flex-1 touch-target"
                     onClick={() => {
                       setEditTarget(product.id);
                       setShowEditModal(true);
@@ -183,7 +182,7 @@ export function Products() {
                   <Button 
                     variant="outline" 
                     size="sm" 
-                    className="text-red-600 hover:text-red-700"
+                    className="text-red-600 hover:text-red-700 flex-1 sm:flex-none touch-target"
                     onClick={() => setDeleteTarget(product)}
                   >
                     <Trash2 className="w-4 h-4 mr-1" />
@@ -198,20 +197,21 @@ export function Products() {
 
       {/* Delete Confirmation Dialog */}
       <AlertDialog open={!!deleteTarget} onOpenChange={() => setDeleteTarget(null)}>
-        <AlertDialogContent className="bg-white dark:bg-black rounded-lg p-6 w-full max-w-sm border dark:border-gray-700">
+        <AlertDialogContent className="bg-white dark:bg-black rounded-lg p-4 sm:p-6 w-full max-w-sm mx-4 border dark:border-gray-700">
           <AlertDialogHeader>
-            <AlertDialogTitle className="text-gray-900 dark:text-white">Delete Product</AlertDialogTitle>
-            <AlertDialogDescription className="text-gray-600 dark:text-gray-300">
+            <AlertDialogTitle className="text-base sm:text-lg text-gray-900 dark:text-white">Delete Product</AlertDialogTitle>
+            <AlertDialogDescription className="text-sm sm:text-base text-gray-600 dark:text-gray-300">
               Are you sure you want to delete <strong className="text-gray-900 dark:text-white">{deleteTarget?.name}</strong>? This action cannot be undone.
             </AlertDialogDescription>
           </AlertDialogHeader>
-          <AlertDialogFooter className="flex justify-end space-x-2 mt-4">
+          <AlertDialogFooter className="flex flex-col sm:flex-row gap-2 sm:gap-0 sm:justify-end sm:space-x-2 mt-4">
             <AlertDialogCancel asChild>
-              <Button variant="outline">Cancel</Button>
+              <Button variant="outline" className="touch-target">Cancel</Button>
             </AlertDialogCancel>
             <AlertDialogAction asChild>
               <Button
                 variant="destructive"
+                className="touch-target"
                 onClick={async () => {
                   try {
                     await deleteProduct(deleteTarget.id);
