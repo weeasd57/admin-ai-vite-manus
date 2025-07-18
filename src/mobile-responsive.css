@@ -175,15 +175,65 @@
 }
 
 /* Dark mode improvements */
+.dark {
+  color-scheme: dark;
+}
+
+.dark .nav-mobile {
+  background: #000000;
+  border-top: 1px solid #27272a;
+}
+
+.dark .card {
+  background: #111111;
+  border: 1px solid #27272a;
+  color: #ffffff;
+}
+
+.dark .error-mobile {
+  background: #7f1d1d;
+  border-color: #991b1b;
+  color: #fca5a5;
+}
+
+.dark .success-mobile {
+  background: #14532d;
+  border-color: #166534;
+  color: #86efac;
+}
+
+.dark .modal {
+  background: #111111;
+  border: 1px solid #27272a;
+  color: #ffffff;
+}
+
+.dark .input {
+  background: #1f1f1f;
+  border-color: #27272a;
+  color: #ffffff;
+}
+
+.dark .btn {
+  background: #1f1f1f;
+  border-color: #27272a;
+  color: #ffffff;
+}
+
+.dark .btn:hover {
+  background: #374151;
+}
+
 @media (prefers-color-scheme: dark) {
   .nav-mobile {
-    background: #1f2937;
-    border-top: 1px solid #374151;
+    background: #000000;
+    border-top: 1px solid #27272a;
   }
   
   .card {
-    background: #1f2937;
-    border: 1px solid #374151;
+    background: #111111;
+    border: 1px solid #27272a;
+    color: #ffffff;
   }
   
   .error-mobile {
