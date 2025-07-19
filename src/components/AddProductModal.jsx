@@ -254,7 +254,7 @@ export function AddProductModal({ isOpen, onClose, onSuccess }) {
                   placeholder="0.00"
                   required={formData.on_sale}
                   className={formData.on_sale && !formData.sale_price ? 'border-red-500' : ''}
-                /></div>
+                />
               </div>
             </div>
 
