@@ -49,10 +49,19 @@ export function AddProductModal({ isOpen, onClose, onSuccess }) {
   };
 
   const handleCheckboxChange = (field, checked) => {
-    setFormData(prev => ({
-      ...prev,
-      [field]: checked
-    }));
+    setFormData(prev => {
+      const newFormData = {
+        ...prev,
+        [field]: checked
+      };
+      
+      // إذا تم إلغاء تفعيل خاصية التخفيض، يتم تفريغ سعر التخفيض
+      if (field === 'on_sale' && !checked) {
+        newFormData.sale_price = '';
+      }
+      
+      return newFormData;
+    });
   };
 
   const handleImageChange = (e) => {
@@ -69,6 +78,22 @@ export function AddProductModal({ isOpen, onClose, onSuccess }) {
     if (!formData.name.trim() || !isValidPrice(formData.price)) {
       toast.error('يرجى إدخال اسم المنتج والسعر الصحيح');
       return;
+    }
+    
+    // التحقق من صحة سعر التخفيض إذا كان المنتج في التخفيضات
+    if (formData.on_sale) {
+      if (!formData.sale_price || !isValidPrice(formData.sale_price)) {
+        toast.error('يرجى إدخال سعر التخفيض عند اختيار "في التخفيضات"');
+        return;
+      }
+      
+      const regularPrice = parsePrice(formData.price);
+      const salePrice = parsePrice(formData.sale_price);
+      
+      if (salePrice >= regularPrice) {
+        toast.error('سعر التخفيض يجب أن يكون أقل من السعر الأصلي');
+        return;
+      }
     }
     
     // التحقق من صحة سعر التخفيض إذا كان موجوداً
@@ -216,7 +241,9 @@ export function AddProductModal({ isOpen, onClose, onSuccess }) {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="sale_price">سعر التخفيض</Label>
+                <Label htmlFor="sale_price">
+                  سعر التخفيض{formData.on_sale && <span className="text-red-500 ml-1">*</span>}
+                </Label>
                 <Input
                   id="sale_price"
                   type="number"
@@ -225,7 +252,9 @@ export function AddProductModal({ isOpen, onClose, onSuccess }) {
                   value={formData.sale_price}
                   onChange={(e) => handleInputChange('sale_price', e.target.value)}
                   placeholder="0.00"
-                />
+                  required={formData.on_sale}
+                  className={formData.on_sale && !formData.sale_price ? 'border-red-500' : ''}
+                /></div>
               </div>
             </div>
 

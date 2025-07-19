@@ -118,6 +118,22 @@ export function EditProductModal({ isOpen, onClose, productId, onSuccess }) {
       return;
     }
     
+    // التحقق من صحة سعر التخفيض إذا كان المنتج في التخفيضات
+    if (formData.on_sale) {
+      if (!formData.sale_price || !isValidPrice(formData.sale_price)) {
+        toast.error('يرجى إدخال سعر التخفيض عند اختيار "في التخفيضات"');
+        return;
+      }
+      
+      const regularPrice = parsePrice(formData.price);
+      const salePrice = parsePrice(formData.sale_price);
+      
+      if (salePrice >= regularPrice) {
+        toast.error('سعر التخفيض يجب أن يكون أقل من السعر الأصلي');
+        return;
+      }
+    }
+    
     if (formData.sale_price && !isValidPrice(formData.sale_price)) {
       toast.error('Please enter a valid sale price');
       return;
@@ -238,14 +254,25 @@ export function EditProductModal({ isOpen, onClose, productId, onSuccess }) {
               <Checkbox
                 id="edit-product-on-sale"
                 checked={formData.on_sale}
-                onCheckedChange={(checked) => setFormData(prev => ({ ...prev, on_sale: checked }))}
+                onCheckedChange={(checked) => {
+                  setFormData(prev => {
+                    const newFormData = { ...prev, on_sale: checked };
+                    // إذا تم إلغاء تفعيل خاصية التخفيض، يتم تفريغ سعر التخفيض
+                    if (!checked) {
+                      newFormData.sale_price = '';
+                    }
+                    return newFormData;
+                  });
+                }}
               />
               <Label htmlFor="edit-product-on-sale">On Sale</Label>
             </div>
 
             {formData.on_sale && (
               <div>
-                <Label htmlFor="edit-product-sale-price">Sale Price</Label>
+                <Label htmlFor="edit-product-sale-price">
+                  Sale Price <span className="text-red-500 ml-1">*</span>
+                </Label>
                 <Input
                   id="edit-product-sale-price"
                   name="sale_price"
@@ -254,6 +281,8 @@ export function EditProductModal({ isOpen, onClose, productId, onSuccess }) {
                   value={formData.sale_price}
                   onChange={handleInputChange}
                   placeholder="Enter sale price"
+                  required={formData.on_sale}
+                  className={formData.on_sale && !formData.sale_price ? 'border-red-500' : ''}
                 />
               </div>
             )}
