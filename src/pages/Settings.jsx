@@ -110,17 +110,48 @@ export function Settings() {
             <div className="space-y-2">
               <Label htmlFor="currency">Currency Code</Label>
               <div className="relative">
-                <Globe className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
-                <Input
+                <Globe className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400 z-10" />
+                <select
                   id="currency"
                   value={settings.currency_code}
                   onChange={(e) => handleInputChange('currency_code', e.target.value)}
-                  placeholder="USD"
-                  className="pl-10"
-                />
+                  className="flex h-10 w-full rounded-md border border-gray-300 bg-white text-gray-900 px-3 py-2 pl-10 text-sm ring-offset-background focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 disabled:cursor-not-allowed disabled:opacity-50 dark:border-gray-600 dark:bg-black dark:text-white dark:focus:border-blue-400"
+                >
+                  <option value="USD">USD - الدولار الأمريكي</option>
+                  <option value="EUR">EUR - اليورو</option>
+                  <option value="GBP">GBP - الجنيه الإسترليني</option>
+                  <option value="JPY">JPY - الين الياباني</option>
+                  <option value="SAR">SAR - الريال السعودي</option>
+                  <option value="AED">AED - الدرهم الإماراتي</option>
+                  <option value="EGP">EGP - الجنيه المصري</option>
+                  <option value="JOD">JOD - الدينار الأردني</option>
+                  <option value="KWD">KWD - الدينار الكويتي</option>
+                  <option value="QAR">QAR - الريال القطري</option>
+                  <option value="BHD">BHD - الدينار البحريني</option>
+                  <option value="OMR">OMR - الريال العُماني</option>
+                  <option value="LBP">LBP - الليرة اللبنانية</option>
+                  <option value="IQD">IQD - الدينار العراقي</option>
+                  <option value="MAD">MAD - الدرهم المغربي</option>
+                  <option value="TND">TND - الدينار التونسي</option>
+                  <option value="DZD">DZD - الدينار الجزائري</option>
+                  <option value="LYD">LYD - الدينار الليبي</option>
+                  <option value="SDG">SDG - الجنيه السوداني</option>
+                  <option value="SYP">SYP - الليرة السورية</option>
+                  <option value="YER">YER - الريال اليمني</option>
+                  <option value="CAD">CAD - الدولار الكندي</option>
+                  <option value="AUD">AUD - الدولار الأسترالي</option>
+                  <option value="CHF">CHF - الفرنك السويسري</option>
+                  <option value="CNY">CNY - اليوان الصيني</option>
+                  <option value="INR">INR - الروبية الهندية</option>
+                  <option value="KRW">KRW - الوون الكوري</option>
+                  <option value="RUB">RUB - الروبل الروسي</option>
+                  <option value="TRY">TRY - الليرة التركية</option>
+                  <option value="BRL">BRL - الريال البرازيلي</option>
+                  <option value="MXN">MXN - البيزو المكسيكي</option>
+                </select>
               </div>
               <p className="text-sm text-gray-500">
-                The default currency code for your store (e.g., USD, EUR, GBP)
+                اختر العملة الافتراضية لمتجرك
               </p>
             </div>
 
