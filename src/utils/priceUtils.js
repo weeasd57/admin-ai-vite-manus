@@ -10,7 +10,7 @@ export function parsePrice(price) {
   const priceStr = String(price).trim();
   
   // إزالة أي رموز عملة أو فواصل
-  const cleanedPrice = priceStr.replace(/[^\d.-]/g, '');
+  const cleanedPrice = priceStr.replace(/[^0-9.-]/g, '');
   
   // تحويل إلى رقم عشري
   const numericPrice = parseFloat(cleanedPrice);
