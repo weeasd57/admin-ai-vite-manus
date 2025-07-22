@@ -13,10 +13,12 @@ export function Orders() {
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [showDetails, setShowDetails] = useState(false);
   const [editingStatus, setEditingStatus] = useState(null);
-  const { getOrders, updateOrder, deleteOrder } = useSupabase();
+  const [appSettings, setAppSettings] = useState(null);
+  const { getOrders, updateOrder, deleteOrder, getAppSettings } = useSupabase();
 
   useEffect(() => {
     loadOrders();
+    loadAppSettings();
   }, []);
 
   const loadOrders = async () => {
@@ -26,6 +28,13 @@ export function Orders() {
       setOrders(data);
     }
     setLoading(false);
+  };
+
+  const loadAppSettings = async () => {
+    const settings = await getAppSettings();
+    if (settings) {
+      setAppSettings(settings);
+    }
   };
 
   const getStatusColor = (status) => {
@@ -55,6 +64,19 @@ export function Orders() {
 
   const formatPrice = (price) => {
     return `$${parseFloat(price || 0).toFixed(2)}`;
+  };
+
+  // حساب المجموع الجزئي (سعر المنتجات فقط)
+  const calculateSubtotal = (orderItems) => {
+    if (!orderItems || !Array.isArray(orderItems)) return 0;
+    return orderItems.reduce((sum, item) => {
+      return sum + (item.quantity * item.price);
+    }, 0);
+  };
+
+  // الحصول على تكلفة التوصيل
+  const getDeliveryCost = () => {
+    return appSettings?.delivery_cost || 0;
   };
 
   const handleStatusUpdate = async (orderId, newStatus) => {
@@ -155,9 +177,27 @@ export function Orders() {
             </div>
 
             <div className="border-t border-gray-200 dark:border-gray-700 pt-3 sm:pt-4">
-              <div className="flex justify-between items-center text-base sm:text-lg font-bold">
-                <span className="text-gray-900 dark:text-white">المجموع الكلي:</span>
-                <span className="text-gray-900 dark:text-white">{formatPrice(selectedOrder.total)}</span>
+              <div className="space-y-2">
+                {/* المجموع الجزئي */}
+                <div className="flex justify-between items-center">
+                  <span className="text-gray-700 dark:text-gray-300">مجموع المنتجات:</span>
+                  <span className="text-gray-900 dark:text-white">{formatPrice(calculateSubtotal(selectedOrder.order_items))}</span>
+                </div>
+                
+                {/* تكلفة التوصيل */}
+                <div className="flex justify-between items-center">
+                  <span className="text-gray-700 dark:text-gray-300">تكلفة التوصيل:</span>
+                  <span className="text-gray-900 dark:text-white">{formatPrice(getDeliveryCost())}</span>
+                </div>
+                
+                {/* خط فاصل */}
+                <div className="border-t border-gray-200 dark:border-gray-600 my-2"></div>
+                
+                {/* المجموع الكلي */}
+                <div className="flex justify-between items-center text-base sm:text-lg font-bold">
+                  <span className="text-gray-900 dark:text-white">المجموع الكلي:</span>
+                  <span className="text-gray-900 dark:text-white">{formatPrice(selectedOrder.total)}</span>
+                </div>
               </div>
             </div>
           </CardContent>
@@ -253,6 +293,24 @@ export function Orders() {
                     <p className="text-xs sm:text-sm text-gray-900 dark:text-gray-100">
                       {order.order_items?.length || 0} items
                     </p>
+                  </div>
+                </div>
+
+                {/* ملخص الأسعار */}
+                <div className="mb-3 sm:mb-4 p-2 sm:p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
+                  <div className="flex justify-between items-center text-xs sm:text-sm mb-1">
+                    <span className="text-gray-600 dark:text-gray-400">مجموع المنتجات:</span>
+                    <span className="text-gray-900 dark:text-white">{formatPrice(calculateSubtotal(order.order_items))}</span>
+                  </div>
+                  <div className="flex justify-between items-center text-xs sm:text-sm mb-1">
+                    <span className="text-gray-600 dark:text-gray-400">تكلفة التوصيل:</span>
+                    <span className="text-gray-900 dark:text-white">{formatPrice(getDeliveryCost())}</span>
+                  </div>
+                  <div className="border-t border-gray-200 dark:border-gray-600 mt-2 pt-1">
+                    <div className="flex justify-between items-center text-xs sm:text-sm font-semibold">
+                      <span className="text-gray-900 dark:text-white">الإجمالي:</span>
+                      <span className="text-gray-900 dark:text-white">{formatPrice(order.total)}</span>
+                    </div>
                   </div>
                 </div>
 
